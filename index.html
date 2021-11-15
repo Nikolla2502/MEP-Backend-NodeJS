@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="stylecours.css" />
+    
+    <title>JS Backend</title>
+  </head>
+
+  <body>
+
+    <div class="title"> Passez au Full stack avec Node.js, Express et MongoDB</div>
+
+    <div class="content">
+      <div class="sommaire">
+        <h3 id="sommaire">- Sommaire -</h3>
+        <ul class="list_sommaire">  
+            <li><strong><a href="#config">1.1 - Configurez votre environnement de développement -</a></strong></li>
+            <li><strong><a href="#nodeserver">1.2 - Démarrez votre serveur Node -</a></strong></li>
+            <li><strong><a href="#express">1.3 - Créez une application Express -</a></strong></li>
+            <li><strong><a href="#get">1.4 - Créez une route GET -</a></strong></li>
+            <li><strong><a href="#post">1.5 - Créez une route POST -</a></strong></li>
+            <li><strong><a href="#mongodb">2.1 - Configurez votre base de données -</a></strong></li>
+            <li><strong><a href="#schema_donnees">2.2 - Créez un schéma de données -</a></strong></li>
+            <li><strong><a href="#getandpostdata">2.3 - Enregistrez et récupérez des données -</a></strong></li>
+            <li><strong><a href="#put_delete_data">2.4 - Modifiez et supprimez des données -</a></strong></li> 
+            <li><strong><a href="#backend_structure">3.1 - Optimisez la structure du back-end -</a></strong>
+              <ul>
+                <li><a href="#routage">Configurez le routage</a>
+                <li><a href="#controleur">Configurez les contrôleurs</a>
+              </ul>
+            </li>
+            <li><strong><a href="#authentification_database">3.2 - Préparez la base de données pour les informations d'authentification -</a></strong></li>
+            <li><strong><a href="#user_create">3.3 - Créez des utilisateurs -</a></strong>
+              <ul>
+                <li><a href="#routage_user">Configurez les routes d'authentification</a>
+                <li><a href="#create_user">Créez des utilisateurs</a>
+              </ul>
+            </li>
+            <li><strong><a href="#auth_user">3.4 - Vérifiez les informations d'identification d'un utilisateur -</a></strong></li>
+            <li><strong><a href="#auth_token">3.5 - Créez des tokens d'authentification -</a></strong></li>
+            <li><strong><a href="#auth_middleware">3.6 - Configurez le middleware d'authentification -</a></strong></li>
+            <li><strong><a href="#multer">4.1 - Acceptez les fichiers entrants avec multer -</a></strong></li>
+            <li><strong><a href="#routes_multer">4.2 - Modifiez les routes pour prendre en compte les fichiers -</a></strong></li>
+            <li><strong><a href="#delete_multer">4.3 - Développez la fonction delete du back-end -</a></strong></li>
+        </ul>
+      </div>
+      <div class="sommaire">
+        <h3>- Ressource -</h3>
+        <ul class="list_sommaire">
+          <li><a href="https://nodejs.org/fr/" target="_blank">Node JS</a></li>
+          <li><a href="https://fr.wikipedia.org/wiki/Node.js" target="_blank">Node JS Wikipedia</a></li>
+          <li><a href="https://www.npmjs.com/package/password-validator" target="_blank">npm install password-validator</a></li>
+          <li><a href="http://expressjs.com/fr/guide/using-middleware.html" target="_blank">Express</a></li>
+          <li><a href="https://developer.mozilla.org/fr/docs/Learn/Server-side/Express_Nodejs/Introduction" target="_blank">MDN - Introduction à Express/Node</a></li>
+          <li><a href="https://www.npmjs.com/package/multer" target="_blank">npm Multer</a></li>
+          <li><a href="https://www.ionos.fr/digitalguide/sites-internet/developpement-web/json-web-token-jwt/" target="_blank">Json Web Token</a></li>
+          <li><a href="https://fr.wikipedia.org/wiki/MongoDB" target="_blank">MongoDB Wiki</a></li>
+          <li><a href="https://docs.mongodb.com/" target="_blank">MongoDB Documentation</a></li>
+          <li><a href="https://www.npmjs.com/package/mongo-mask" target="_blank">Mongo Mask</a></li>
+          <li><a href="https://www.npmjs.com/package/helmet" target="_blank">Helmet NPM</a></li>
+          <li><a href="https://www.geeksforgeeks.org/node-js-securing-apps-with-helmet-js/" target="_blank">Helmet</a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <h3 class="sommaire_fixed"><a href="#sommaire">Index</a></h3>
+    <h2 id="config">1.1 - Configurez votre environnement de développement -</h2>
+
+    <h3>Installez Node</h3>
+    Accédez à <a href="https://nodejs.org/fr/" target="_blank">NodeJS.org</a> pour télécharger puis installer la dernière version de Node.<br>
+    Cela a pour effet d'installer le runtime JavaScript de Node, ce qui vous permet par là même d'exécuter les serveurs Node.<br>
+    Cela installe également <strong>Node Package Manager</strong> ou <strong><u>npm</u></strong>, outil précieux pour l'installation des packages nécessaires à la création de vos projets.<br>
+    <h4>Verifier la version de node</h4>
+    <div class="code">
+      node -v<br>
+      node --version<br>
+    </div><br>
+    <h4>Verifier la version de NPM</h4>
+    <div class="code">
+      npm -v<br>
+    </div><br>
+    <a href="https://practicalprogramming.fr/tuto-node-version" target="_blank">Comment connaître sa version Node ?</a>
+
+    <h3>Installez Angular</h3>
+    Il vous faudra également la <strong>CLI Angular</strong> pour pouvoir faire tourner le serveur de développement sur lequel sera exécuté le code du front-end.<br>
+    Pour l'installer, exécutez la commande suivante à partir de votre console :<br><br>
+    <div class="code">
+      npm install -g @angular/cli
+    </div><br><br>
+    <div class="important">
+      Les utilisateurs Mac devront peut-être ajouter <strong><u>sudo</u></strong> pour que cela fonctionne.<br>
+      Pour plus d'informations sur l'utilisation de <strong><u>npm</u></strong>  sur MacOS, reportez-vous à la page <a href="https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally" target="_blank">Resolving EACCES permissions errors when installing packages globally</a>, issue de la documentation de <strong><u>npm</u></strong>.
+    </div>
+
+    <h3>Clonez l'application front-end</h3>
+    Il est maintenant temps de créer votre répertoire de travail pour ce cours : vous pouvez le nommer go-fullstack par exemple.<br>
+    Une fois le répertoire créé, il vous faudra cloner le <a href="https://github.com/OpenClassrooms-Student-Center/go-fullstack-fr-frontend" target="_blank">code pour l'application front-end</a> dans un sous-répertoire appelé frontend .<br>
+    À partir de votre répertoire de travail, entrez la commande ci-dessous :<br>
+    <div class="code">
+      git clone https://github.com/OpenClassrooms-Student-Center/go-fullstack-fr-frontend.git frontend
+    </div><br>
+    Vous pouvez ensuite procéder comme suit :<br>
+    <div class="code">
+      cd frontend<br>
+      npm install<br>
+      ng serve<br>
+    </div><br>
+    Cela installera toutes les dépendances requises par l'application front-end et lancera le serveur de développement.<br>
+    Désormais, si vous accédez à <a href="http://localhost:4200" target="_blank">http://localhost:4200</a>, vous devriez voir l'interface suivante (en supposant que vous avez bien suivi les étapes ci-dessus) :<br><br>
+    <figure>
+      <img src="media/P6_Acceuil_frontend.png">
+      <figcaption>Page d'accueil de l'application front-end</figcaption>
+    </figure><br><br>
+    N'hésitez pas à explorer le contenu pour avoir un aperçu de ce que nous allons créer.<br>
+    Ça ne représente pas encore beaucoup, mais c'est là que vous intervenez !<br><br>
+    La dernière étape consiste à créer un second sous-répertoire dans votre répertoire de travail, appelé backend.<br>
+    C'est là que vous créerez l'application Express.<br><br>
+    <p>
+      Veillez à avoir toujours un terminal qui exécute <strong><u>ng serve</u></strong> lorsque vous travaillez sur ce cours.<br>
+      De cette façon, vous pourrez toujours tester votre code en temps réel !
+    </p>
+
+    <h5><a href="#sommaire">Sommaire</a></h5>
+
+    <h2 id="nodeserver">- Démarrez votre serveur Node -</h2>
+
+    <h3>Qu'est-ce que Node ?</h3>
+    Avant de nous lancer dans l'écriture du code, qu'est-ce que Node ?<br>
+    Qu'est-ce qu'Express ?<br>
+    Y-a-t-il une différence ?<br>
+    <strong>Node</strong> est le <strong>runtime</strong> qui permet d'écrire toutes nos tâches côté serveur, en JavaScript, telles que la logique métier, la persistance des données et la sécurité.<br>
+    Node ajoute également des fonctionnalités que le JavaScript du navigateur standard ne possède pas, comme par exemple l'accès au système de fichiers local.<br>
+    <strong>Express</strong> est, pour faire court, un framework reposant sur Node qui facilite la création et la gestion des serveurs Node, comme vous le verrez à mesure que nous progresserons dans ce cours.
+
+    <h3>Initialisez votre projet</h3>
+    À partir de votre dossier <strong><u>backend</u></strong> , exécutez la commande de terminal <strong><u>npm init</u></strong> pour initialiser votre projet.<br>
+    Vous pouvez utiliser les options par défaut ou les modifier si vous le souhaitez.<br>
+    Cependant, votre point d'entrée doit être <strong><u>server.js </u></strong>.<br>
+     Vous le créerez bientôt.<br>
+     <video src="media/2_1_init_backend.mp4" controls width="800"></video><br/><br/>
+    Ce processus génère un fichier <strong><u> package.json</u></strong> vierge, dans lequel seront enregistrés les détails de tous les packages <strong><u> npm </u></strong>que nous utiliserons pour ce projet.<br>
+    À ce stade, vous pouvez initialiser un dépôt Git en exécutant <strong><u> git init </u></strong> depuis votre dossier backend .<br>
+    N'oubliez pas de créer un fichier <strong><u> .gitignore </u></strong>contenant la ligne <strong><u> node_modules </u></strong>afin de ne pas envoyer ce dossier (qui deviendra volumineux) vers votre dépôt distant.<br>
+    Créez un fichier <strong><u> server.js </u></strong> à l'intérieur de votre dossier <strong><u> backend </u></strong>.<br>
+    Il contiendra votre premier serveur Node.
+
+    <h3>Démarrez un serveur basique</h3>
+    <video src="media/2_2_init_server.js.mp4" controls width="800"></video><br/><br/>
+    Pour créer un serveur Node dans votre fichier <strong><u> server.js </u></strong>, il vous faudra le code suivant :<br>
+    <div class="code">
+      const http = require('http');<br>
+      const server = http.createServer((req, res) => {<br>
+          res.end('Voilà la réponse du serveur !');<br>
+      });<br>
+      server.listen(process.env.PORT || 3000);<br>
+    </div><br><br>
+    Ici, vous importez le package HTTP natif de Node et l'utilisez pour créer un serveur, en passant une fonction qui sera exécutée à chaque appel effectué vers ce serveur.<br>
+    Cette fonction reçoit les objets <strong><u> request </u></strong> et <strong><u> response </u></strong> en tant qu'arguments.<br>
+    Dans cet exemple, vous utilisez la méthode <strong><u> end </u></strong> de la réponse pour renvoyer une réponse de type <strong><u> string </u></strong> à l'appelant.
+    <ul>
+      <li>soit la variable d'environnement du port grâce à <strong><u> process.env.PORT </u></strong>:<br>
+         si la plateforme de déploiement propose un port par défaut, c'est celui-ci qu'on écoutera ;</li>
+      <li>soit le port 3000, ce qui nous servira dans le cas de notre plateforme de développement.</li>
+    </ul><br>
+    Démarrez le serveur en exécutant <strong><u> node server </u></strong> à partir de la ligne de commande.<br>
+    Pour vérifier qu'il envoie la réponse correcte, utilisez une fenêtre de navigateur pour accéder à <a href="http://localhost:3000" target="_blank">http://localhost:3000</a> (en supposant que vous ayez bien suivi les étapes ci-dessus).<br>
+    Vous pouvez également utiliser un outil de test tel que <a href="https://www.postman.com/" target="_blank">Postman</a> pour effectuer une requête GET (ou tout autre type de requête d'ailleurs, car notre serveur ne fait actuellement aucune distinction !) vers la même URL :<a href="http://localhost:3000" target="_blank">http://localhost:3000</a>(à nouveau, en supposant que vous ayez bien suivi les étapes ci-dessus).
+
+    <h3>Installez nodemon</h3>
+    <video src="media/2_3_install_nodemon.mp4" controls width="800"></video><br/><br/>
+
+    Pour simplifier le développement Node, vous souhaiterez peut-être installer <strong><u> nodemon </u></strong>.<br>
+    Pour ce faire, exécutez la commande suivante :<br>
+    <div class="code">
+      npm install -g nodemon
+    </div><br><br>
+    Désormais, au lieu d'utiliser <strong><u> node server </u></strong> pour démarrer votre serveur, vous pouvez utiliser <strong><u>  nodemon server </u></strong>.<br>
+    Il surveillera les modifications de vos fichiers et redémarrera le serveur lorsqu'il aura besoin d'être mis à jour.<br>
+    Cela vous garantit d'avoir toujours la dernière version de votre serveur dès que vous sauvegardez, sans devoir relancer manuellement le serveur !<br>
+    Vous n'aurez qu'à relancer la requête vers votre serveur.<br><br>>
+    Maintenant que vous savez démarrer un serveur de développement Node, dans le chapitre suivant, nous ajouterons <strong>Express </strong>au projet pour simplifier encore plus la création de notre API.
+
+
+    <h5><a href="#sommaire">Sommaire</a></h5>
+
+  
+    <h2 id="express">- Créez une application Express -</h2> 
+    Coder des serveurs Web en Node pur est possible, mais long et laborieux.<br>
+    En effet, cela exige d'analyser manuellement chaque demande entrante.<br>
+    L'utilisation du <strong>framework Express</strong> simplifie ces tâches, en nous permettant de déployer nos API beaucoup plus rapidement.<br>
+    Installons-le maintenant.
+
+    <h3>Installez Express</h3>
+    <video src="media/3_1_install_express.mp4" controls width="800"></video><br/><br/>
+    Pour ajouter Express à votre projet, exécutez la commande suivante à partir de votre dossier <strong><u> backend </u></strong>:<br>
+    <div class="code">
+      npm install --save express
+    </div><br>
+    Créez un fichier <strong><u> app.js </u></strong>, où vous placerez votre application Express :<br>
+    <div class="code">
+      const express = require('express');<br>
+      const app = express();<br>
+      module.exports = app;<br>
+    </div><br>
+
+    <h3>Exécutez l'application Express sur le serveur Node</h3>
+    <video src="media/3_2_init_express.mp4" controls width="800"></video><br/><br/>
+    Revenez à votre fichier <strong><u> server.js </u></strong> et modifiez-le comme suit :<br>
+    <div class="code">
+      const http = require('http');<br>
+      const app = require('./app');<br>
+      <br>
+      app.set('port', process.env.PORT || 3000);<br>
+      const server = http.createServer(app);<br>
+      <br>
+      server.listen(process.env.PORT || 3000);<br>
+    </div><br>
+    Effectuer une demande vers ce serveur générera une erreur 404, car notre application n'a encore aucun moyen de répondre.<br>
+    Configurons une réponse simple pour nous assurer que tout fonctionne correctement, en effectuant un ajout à notre fichier <strong><u> app.js </u></strong>:<br>
+    <div class="code">
+      const express = require('express');<br>
+      <br>
+      const app = express();<br>
+      <br>
+      app.use((req, res) => {<br>
+      res.json({ message: 'Votre requête a bien été reçue !' }); <br>
+      });<br>
+      <br>
+      module.exports = app;<br>
+    </div><br>
+    Si vous essayez d'effectuer une requête à votre serveur, vous devez récupérer un objet JSON contenant le message que nous avons spécifié.<br><br>
+    Maintenant que notre serveur Node gère correctement notre application Express, voyons comment nous pouvons ajouter des fonctionnalités à l'application.
+
+    <h3>- Ajoutez des middleware -</h3>
+    Une application Express est fondamentalement une série de fonctions appelées <strong>middleware</strong>.<br>
+    Chaque élément de <strong>middleware</strong> reçoit les objets <strong><u> request </u></strong> et <strong><u> response </u></strong>, peut les lire, les analyser et les manipuler, le cas échéant.<br>
+    Le middleware Express reçoit également la méthode <strong><u> next </u></strong> , qui permet à chaque <strong>middleware</strong> de passer l'exécution au middleware suivant.<br><br>
+    <video src="media/3_3_middleware.mp4" controls width="800"></video><br/><br/>
+    <div class="tableau_double" style="display: flex;">
+      <div class="code">
+        const express = require('express');<br/>
+        <br/>
+        const app = express();<br/>
+        <br/>
+        app.use((req, res, next) => {<br/>
+          console.log('Requête reçue !');<br/>
+          next();<br/>
+        });<br/>
+        <br/>
+        app.use((req, res, next) => {<br/>
+          res.status(201);<br/>
+          next();<br/>
+        });<br/>
+        <br/>
+        app.use((req, res, next) => {<br/>
+          res.json({ message: 'Votre requête a bien été reçue !' });<br/>
+          next();<br/>
+        });<br/>
+        <br/>
+        app.use((req, res, next) => {<br/>
+          console.log('Réponse envoyée avec succès !');<br/>
+        });<br/>
+        <br/>
+        module.exports = app;<br/>
+      </div>
+      <ul>Cette application Express contient quatre éléments de <strong>middleware</strong> :
+        <li style="margin-top:4rem;"> le premier enregistre « Requête reçue ! » dans la console et passe l'exécution ;</li>
+        <li style="margin-top:8rem;"> le deuxième ajoute un code d'état 201 à la réponse et passe l'exécution ;</li>
+        <li style="margin-top:8rem;"> le troisième envoie la réponse JSON et passe l'exécution ;</li>
+        <li style="margin-top:6rem;"> le dernier élément de <strong>middleware</strong> enregistre « Réponse envoyée avec succès ! » dans la console.</li>
+      </ul>
+  </div><br>
+    Il s'agit d'un serveur très simple et qui ne fait pas grand-chose pour l'instant, mais il illustre comment le <strong>middleware</strong> fonctionne dans une application Express.
+
+    <h3>Améliorez <strong><u> server.js </u></strong> </h3>
+    Avant d'aller plus loin dans le cours, apportons quelques améliorations à notre fichier <strong><u> server.js </u></strong>, pour le rendre plus stable et approprié pour le déploiement :<br><br>
+    <div class="tableau_double" style="display: flex;">
+      <div class="code">
+        const http = require('http');<br>
+        const app = require('./app');<br>
+        <br>
+        const normalizePort = val => {<br>
+          const port = parseInt(val, 10);<br>
+          <br>
+          if (isNaN(port)) {<br>
+            return val;<br>
+          }<br>
+        if (port >= 0) {<br>
+          return port;<br>
+        }<br>
+        return false;<br>
+      };<br>
+      <span style="color:red;">(1) </span>const port = normalizePort(process.env.PORT || '3000');<br>
+      app.set('port', port);<br>
+      <br>
+      <span style="color:red;"><strong>(2) </strong></span>const errorHandler = error => {<br>
+        if (error.syscall !== 'listen') {<br>
+          throw error;<br>
+        }<br>
+        const address = server.address();<br>
+        const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;<br>
+        switch (error.code) {<br>
+          case 'EACCES':<br>
+          console.error(bind + ' requires elevated privileges.');<br>
+          process.exit(1);<br>
+          break;<br>
+          case 'EADDRINUSE':<br>
+          console.error(bind + ' is already in use.');<br>
+          process.exit(1);<br>
+          break;<br>
+          default:<br>
+          throw error;<br>
+        }<br>
+      };<br>
+      <br>
+      const server = http.createServer(app);<br>
+      <br>
+      server.on('error', errorHandler);<br>
+      server.on('listening', () => {<br>
+        const address = server.address();<br>
+        const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;<br>
+        console.log('Listening on ' + bind);<br>
+      });<br>
+      <br>
+      server.listen(port);<br>
+      <br>
+    </div>
+    <ul style="margin-top:21rem;">Aperçu rapide de ce qui se passe ici :
+      <li style="margin-top:2rem;"><span style="color:red;"><strong>(1)</strong></span> la fonction <strong><u> normalizePort </u></strong> renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne ;</li><br><br>
+      <li><span style="color:red;"><strong>(2)</strong></span> la fonction <strong><u> errorHandler </u></strong>  recherche les différentes erreurs et les gère de manière appropriée. Elle est ensuite enregistrée dans le serveur ;</li><br><br>
+      <li>- un écouteur d'évènements est également enregistré, consignant le port ou le canal nommé sur lequel le serveur s'exécute dans la console.</li>
+    </ul>
+  </div><br>
+    
+  Notre serveur de développement Node est à présent opérationnel. Vous pouvez ainsi ajouter les fonctionnalités appropriées à l'application Express.
+  
+  
+  <h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="get">- Créez une route GET -</h2> 
+  Il est temps d'ajouter les fonctionnalités dont notre application front-end a besoin et de regarder le système complet prendre forme !<br>
+  Votre application front-end doit s'exécuter dans un navigateur.<br>
+  Exécutez donc <strong><u> ng serve </u></strong> à partir du répertoire front-end, accédez à <a href="http://localhost:4200" target="_blank">http://localhost:4200</a> avec votre navigateur puis cliquez sur « Parties 1 + 2 ».
+
+  <h3>Remettre des articles en vente</h3>
+  <video src="media/4_1_GET.mp4" controls width="800"></video><br/><br/>
+  Comme vous avez pu le remarquer, l'application front-end affiche actuellement un spinner et indique une erreur dans la console.<br>
+  Cela est dû au fait qu'elle tente d'accéder à notre API (qui n'existe pas encore !) et de récupérer les articles en vente.<br>
+  Essayons de rendre ces articles accessibles.<br>
+  Dans votre fichier <strong><u> app.js </u></strong>, remplacez tout le middleware par le suivant : <br>
+  <div class="tableau_double" style="display: flex;">
+    <div class="code">
+      app.use(<span style="color:red;"><strong>'/api/stuff'</strong></span>, (req, res, next) => {<br>
+        const stuff = [<br>
+          {<br>
+            _id: 'oeihfzeoi',<br>
+            title: 'Mon premier objet',<br>
+            description: 'Les infos de mon premier objet',<br>
+            imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',<br>
+            price: 4900,<br>
+            userId: 'qsomihvqios',<br>
+          },
+          {
+            _id: 'oeihfzeomoihi',<br>
+            title: 'Mon deuxième objet',<br>
+            description: 'Les infos de mon deuxième objet',<br>
+            imageUrl: 'https://cdn.pixabay.com/photo/2019/06/11/18/56/camera-4267692_1280.jpg',<br>
+            price: 2900,<br>
+            userId: 'qsomihvqios',<br>
+          },<br>
+        ];<br>
+        res.status(200).json(stuff);<br>
+      });<br>
+  </div><br>
+  <ul>
+    <li> La première différence que vous remarquerez est l'argument supplémentaire passé à la méthode <strong><u> use </u></strong>:<br>
+    nous lui passons un string, correspondant à la route pour laquelle nous souhaitons enregistrer cet élément de <strong>middleware</strong>.<br>
+    Dans ce cas, cette route sera <strong><u>http://localhost:3000/api/stuff</u></strong> , car il s'agit de l'URL demandée par l'application front-end.;</li><br><br>
+    <li> Dans ce <strong>middleware</strong>, nous créons un groupe d'articles avec le schéma de données spécifique requis par le front-end. Nous envoyons ensuite ces articles sous la forme de données JSON, avec un code 200 pour une demande réussie.;</li><br><br>
+    <li>Si vous effectuez une demande GET vers cette route (aussi appelée endpoint) à partir de Postman,<br>
+      vous verrez que vous recevrez le groupe de stuff mais que l'actualisation du navigateur ne semble pas fonctionner.<br>
+       Que se passe-t-il donc exactement ici ?</li>
+  </ul>
+</div><br>
+
+<h3>Erreurs de CORS</h3>
+CORS signifie « <strong>Cross Origin Resource Sharing</strong> ».<br>
+Il s'agit d'un système de sécurité qui, par défaut, bloque les appels HTTP d'être effectués entre des serveurs différents, ce qui empêche donc les requêtes malveillantes d'accéder à des ressources sensibles.<br>
+Dans notre cas, nous avons deux origines :<strong><u> localhost:3000 </u></strong> et <strong><u> localhost:4200 </u></strong>, et nous souhaiterions qu'elles puissent communiquer entre elles.<br>
+Pour cela, nous devons ajouter des headers à notre objet <strong><u> response </u></strong>.<br><br>
+<video src="media/4_2_CORS.mp4" controls width="800"></video><br/><br/>
+De retour au fichier <strong><u> app.js </u></strong>, ajoutez le <strong>middleware</strong> suivant avant la route d'API :<br>
+<div class="tableau_double" style="display: flex;">
+  <div class="code">
+    app.use((req, res, next) => {<br>
+      res.setHeader('Access-Control-Allow-Origin', '*');<br>
+      res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');<br>
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');<br>
+      next();<br>
+    });<br>
+  </div>
+  <ul>Ces headers permettent :
+    <li>d'accéder à notre API depuis n'importe quelle origine ( <strong><u>'*'</u></strong> ) ;</li>
+    <li>d'ajouter les headers mentionnés aux requêtes envoyées vers notre API (<strong><u> Origin </u></strong>,<strong><u> X-Requested-With </u></strong>, etc.) ;</li>
+    <li>d'envoyer des requêtes avec les méthodes mentionnées ( <strong><u> GET </u></strong>,<strong><u> POST </u></strong>, etc.).</li>
+  </ul>
+</div><br>
+Comme vous pouvez le voir dans le code, le <strong>middleware</strong> ne prend pas d'adresse en premier paramètre afin de s'appliquer à toutes les routes.<br>
+Cela permettra à toutes les demandes de toutes les origines d'accéder à votre API.<br>
+Vous pouvez également ajouter des URL d'images valides aux stuff renvoyés par l'API, en terminant la route GET.<br>
+Si vous actualisez à présent l'application front-end, vous devriez voir vos articles en vente :<br><br>
+<img src="media/P6_frontend.png"><br>
+Maintenant que vous avez correctement implémenté une route basique pour remettre les stuff en vente, voyons comment autoriser les utilisateurs à proposer leurs propres articles à la vente.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="post">- Créez une route POST -</h2> 
+  <h3>Recevez des articles de l'application front-end</h3>
+  Bien que nous ne puissions pas, pour le moment, stocker de données envoyées par l'utilisateur, puisque nous n'avons configuré aucune base de données, nous pouvons du moins veiller à recevoir correctement les données du front-end.<br>
+  L'application front-end contient un formulaire « Vendre un article », qui envoie une demande POST (contenant l'article à vendre) à notre route  <strong><u>api/stuff </u></strong>.<br>
+  Voyons comment nous pouvons capturer ces données.<br><br>
+  <video src="media/5_1_POST.mp4" controls width="800"></video><br/><br/>
+  Pour gérer la demande POST provenant de l'application front-end, nous devrons être capables d'extraire l'objet JSON de la demande.<br/>
+  Il nous faudra le package <strong><u> body-parser </u></strong>.<br/>
+  Installez-le en tant que dépendance de production à l'aide de <strong><u> npm </u></strong>:<br><br/>
+  <div class="code">
+    npm install --save body-parser<br/>
+  </div><br/><br/>
+  Importez-le dans votre fichier <strong><u> app.js </u></strong>:<br/><br/>
+  <div class="code">
+    const bodyParser = require('body-parser');<br/>
+  </div><br/><br/>
+  Enfin, définissez sa fonction <strong><u> json </u></strong> comme <strong>middleware</strong> global pour votre application, juste après avoir défini les headers de la réponse :<br/><br/>
+  <div class="code">
+    app.use(bodyParser.json());<br/>
+  </div><br/><br/>
+  Maintenant, <strong><u> body-parser </u></strong> a analysé le corps de la demande.<br/>
+  Au lieu de l'écrire dans un <strong>middleware</strong> <strong><u> .use() </u></strong>qui traiterait toutes les requêtes, nous allons l'écrire dans un <strong><u>.post() </u></strong> qui ne traitera que les requêtes de type POST :<br><br/>
+  <div class="code">
+    app.post('/api/stuff', (req, res, next) => {<br/>
+      console.log(req.body);<br/>
+      res.status(201).json({<br/>
+        message: 'Objet créé !'<br/>
+      });<br/>
+    });<br/>
+  </div><br/><br/>
+  <div class="important">
+    Veillez à placer la route POST au-dessus du <strong> middleware </strong> pour les demandes GET,<br>
+     car la logique GET interceptera actuellement toutes les demandes envoyées à votre point de terminaison <strong><u>/api/stuff </u></strong>,<br>
+     étant donné qu'on ne lui a pas spécifié de verbe spécifique.<br>
+    Placer la route POST au-dessus interceptera les demandes POST, en les empêchant d'atteindre le <strong>middleware</strong> GET.
+  </div><br/>
+  Désormais, si vous remplissez le formulaire dans l'application front-end et que vous l'envoyez, l'objet que vous venez de créer doit s'enregistrer dans votre console Node !
+
+  <h3>En résumé</h3>
+  <ul>Dans cette première partie du cours, vous avez :
+    <li>configuré votre environnement de développement, avec toutes les dépendances requises pour démarrer ;</li>
+    <li>démarré votre premier serveur Node et l'avez utilisé pour gérer votre première application Express ;</li>
+    <li>créé deux routes pour votre application, et vous avez également implémenté CORS pour vous assurer que le front-end pouvait effectuer des appels vers votre application en toute sécurité.</li>
+  </ul>
+  Dans la partie suivante du cours, vous ajouterez la couche de base de données MongoDB.<br>
+  Celle-ci est essentielle pour votre application et permettra de la rendre entièrement dynamique.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="mongodb">- Configurez votre base de données -</h2>
+  Jusqu'à présent, nous n'avons pas pu faire persister de données ou rendre notre application entièrement dynamique.<br>
+  Mais tout cela est sur le point de changer, car nous intégrons la couche de base de données de notre serveur : <strong>MongoDB</strong>.<br>
+  Bien qu'il soit possible de télécharger et d'exécuter MongoDB sur votre propre machine <br>
+  (reportez-vous au <a href="https://www.mongodb.com/try?initial=true#community" target="_blank">site Web de MongoDB</a> pour en savoir plus),<br>
+  pour ce cours nous utiliserons la couche gratuite de MongoDB Atlas, la « database as a service » (base de données en tant que service).
+  <h3>Configurez MongoDB Atlas</h3>
+  <video src="media/6_1_mongoDB.mp4" controls width="800"></video><br/><br/>
+  Accédez au <a href="" target="_blank">site Web de MongoDB</a> et inscrivez-vous pour obtenir un compte gratuit.<br>
+  Une fois que vous avez accès à votre tableau de bord, créez un cluster puis configurez-le avec <strong>l'option AWS </strong> et <strong>uniquement les options gratuites </strong>afin de pouvoir développer gratuitement.<br>
+  Pendant le démarrage de votre cluster, vous pouvez accéder à l'onglet <strong>Database Access</strong>.<br>
+  D'abord, vous devrez ajouter un utilisateur disposant de la capacité de lecture et d'écriture dans n'importe quelle base de données.<br>
+  Choisissez le nom d'utilisateur ainsi que le mot de passe de votre choix et notez-les, car vous en aurez besoin pour connecter votre API à votre cluster.<br>
+  <figure>
+    <img src="media/mongoDB.png">
+    <figcaption>Création d'un nouvel utilisateur en « read and write »</figcaption>
+  </figure>
+  Vous devrez également accéder à l'onglet <strong>Network Access</strong>,<br>
+   cliquer sur <strong><u> Add IP Adress </u></strong> <br>
+   et autoriser l'accès depuis n'importe où (<strong><u> Add access from Anywhere</u></strong>).<br>
+  Une fois la création de votre cluster terminée, vous pouvez passer à la section suivante.
+
+  <h3>Connectez votre API à votre cluster MongoDB</h3>
+  <video src="media/6_2_mongodb_connect_API.mp4" controls width="800"></video><br/><br/>
+  Depuis MongoDB Atlas, cliquez sur le bouton <strong><u> Connect </u></strong> et choisissez <strong><u> Connect your application </u></strong>.<br>
+  Sélectionnez bien la version la plus récente du driver Node.js, puis <strong><u> Connection String Only </u></strong>, et faites une copie de la chaîne de caractères retournée.<br><br>
+  De retour sur votre projet, installez le package Mongoose en exécutant, à partir du dossier <strong><u> backend </u></strong>, la commande suivante :<br>
+  <div class="code">
+    npm install --save mongoose
+  </div><br><br>
+  <div class="remarque">
+    Mongoose est un package qui facilite les interactions avec notre base de données MongoDB grâce à des fonctions extrêmement utiles.
+  </div><br><br>
+  Une fois l'installation terminée, importez <strong><u>  mongoose </u></strong> dans votre fichier <strong><u>  app.js </u></strong> en ajoutant la constante suivante :<br><br>
+  <div class="code">
+    const mongoose = require('mongoose');
+  </div><br><br>
+  Juste en dessous de votre déclaration de constante <strong><u> app </u></strong>, ajoutez la ligne suivante.<br>
+  Veillez à remplacer l'adresse SRV par la vôtre et la chaîne <strong><u> <"PASSWORD"> </u></strong> par votre mot de passe utilisateur MongoDB :<br><br>
+  <div class="code">
+    mongoose.connect('mongodb+srv://jimbob:<PASSWORD>@cluster0-pme76.mongodb.net/test?retryWrites=true&w=majority',<br>
+      { useNewUrlParser: true,<br>
+        useUnifiedTopology: true })<br>
+      .then(() => console.log('Connexion à MongoDB réussie !'))<br>
+      .catch(() => console.log('Connexion à MongoDB échouée !'));<br>
+  </div><br><br>
+  Après enregistrement voire redémarrage de votre serveur Node si nécessaire, vous devriez voir le message « Connexion à MongoDB Atlas réussie ! » dans la console. <br>
+  Votre API est à présent connectée à votre base de données et nous pouvons commencer à créer des routes serveur afin d'en bénéficier.
+
+
+  <h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="schema_donnees">- Créez un schéma de données -</h2>
+  L'un des avantages que nous avons à utiliser Mongoose pour gérer notre base de données MongoDB est que nous pouvons implémenter des schémas de données stricts,<br>
+   qui permettent de rendre notre application plus robuste.<br>
+   Commençons par créer un schéma <strong>Thing</strong> (« chose ») pour tout objet mis en vente dans notre application.
+
+   <h3>Créez un schéma Thing</h3>
+   <video src="media/6_3_mongodb_schema.mp4" controls width="800"></video><br/><br/>
+
+   Dans votre dossier <strong><u> backend </u></strong>, créez un dossier appelé <strong><u> models </u></strong> et, dans ce nouveau dossier, un fichier appelé <strong><u> thing.js </u></strong>:<br><br>
+   <div class="tableau_double" style="display: flex;">
+    <div class="code">
+      const mongoose = require('mongoose');<br>
+      <br>
+      const thingSchema = mongoose.Schema({<br>
+      title: { type: String, required: true },<br>
+      description: { type: String, required: true },<br>
+      imageUrl: { type: String, required: true },<br>
+      userId: { type: String, required: true },<br>
+      price: { type: Number, required: true },<br>
+    });<br>
+
+module.exports = mongoose.model('Thing', thingSchema);
+  </div><br>
+  <ul>Ici, voici ce que nous faisons :
+    <li>nous créons un schéma de données qui contient les champs souhaités pour chaque Thing,<br>
+       indique leur type ainsi que leur caractère (obligatoire ou non).<br>
+       Pour cela, on utilise la méthode Schema mise à disposition par Mongoose.<br>
+       Pas besoin de mettre un champ pour l'Id puisqu'il est automatiquement généré par Mongoose,</li><br><br>
+    <li> ensuite, nous exportons ce schéma en tant que modèle Mongoose appelé « Thing »,<br>
+       le rendant par là même disponible pour notre application Express.</li>
+  </ul>
+</div><br>
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="getandpostdata">- Enregistrez et récupérez des données -</h2> 
+
+  <h3>Enregistrement des Things dans la base de données</h3>
+  <video src="media/6_4_mongodb_post_thing.mp4" controls width="800"></video><br/><br/>
+  Pour pouvoir utiliser notre nouveau modèle Mongoose dans l'application, nous devons l'importer dans le fichier <strong><u> app.js </u></strong>:<br><br>
+  <div class="code">
+    const Thing = require('./models/thing');
+  </div><br><br>
+  Maintenant, remplacez la logique de votre route POST par :<br><br>
+  <div class="code">
+    app.post('/api/stuff', (req, res, next) => {<br>
+      delete req.body._id; <span style="color:rgb(140, 140, 140);"> ******On supprime l'_Id envoyé par le front-end</span><br>
+      const thing = new Thing({<br>
+        ...req.body<span style="color:rgb(140, 140, 140);">  ****On recupère le body</span><br>
+      });<br>
+      thing.save()<br>
+        .then(() => res.status(201).json({ message: 'Objet enregistré !'}))<br>
+        .catch(error => res.status(400).json({ error }));<br>
+    });<br>
+  </div><br><br>
+  Ici, vous créez une instance de votre modèle <strong><u> Thing </u></strong> en lui passant un objet JavaScript contenant toutes les informations requises du corps de requête analysé (en ayant supprimé en amont le faux_id envoyé par le front-end).<br>
+
+<div class="remarque">
+  L'opérateur spread <strong><u> ... </u></strong> est utilisé pour faire une copie de tous les éléments de req.body .<br>
+  Pour plus d'informations sur l'opérateur spread, rendez-vous sur la <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Spread_syntax" target="_blank"> documentation de MDN</a>.
+</div><br><br>
+Ce modèle comporte une méthode <strong><u> save() </u></strong> qui enregistre simplement votre <strong><u>Thing </u></strong> dans la base de données.<br><br>
+<div class="remarque">
+  La base de données MongoDB est fractionnée en <strong>collections </strong>: le nom de la collection est défini par défaut sur le pluriel du nom du modèle.<br>
+  Ici, ce sera <strong><u> Things </u></strong>.
+</div><br><br>
+La méthode <strong><u> save() </u></strong> renvoie une Promise.<br>
+Ainsi, dans notre bloc <strong><u> then() </u></strong> , nous renverrons une réponse de réussite avec un code 201 de réussite.<br>
+Dans notre bloc <strong><u> catch() </u></strong> , nous renverrons une réponse avec l'erreur générée par Mongoose ainsi qu'un code d'erreur 400.
+
+<h3>Récupération de la liste de Things en vente</h3>
+<video src="media/6_5_mongodb_get_things.mp4" controls width="800"></video><br/><br/>
+Désormais, nous pouvons implémenter notre route GET afin qu'elle renvoie tous les <strong><u> Things </u></strong> dans la base de données :<br><br>
+<div class="code">
+  app.use('/api/stuff', (req, res, next) => {<br>
+    Thing.find()<br>
+      .then(things => res.status(200).json(things))<br>
+      .catch(error => res.status(400).json({ error }));<br>
+  });<br>
+</div><br><br>
+Dans l'exemple ci-dessus, nous utilisons la méthode <strong><u> find() </u></strong> dans notre modèle Mongoose afin de renvoyer un tableau contenant tous les <strong><u> Things </u></strong> dans notre base de données.<br>
+À présent, si vous ajoutez un <strong><u> Thing </u></strong> , il doit s'afficher immédiatement sur votre page d'articles en vente.<br><br>
+En revanche, si vous cliquez sur l'un des <strong><u> Things </u></strong>, l'affichage d'un seul élément ne fonctionne pas.<br>
+En effet, il tente d'effectuer un appel GET différent pour trouver un <strong><u> Thing </u></strong> individuel.<br>
+Implémentons cette route maintenant.
+
+<h3>Récupération d'un Thing spécifique</h3>
+<video src="media/6_6_mongodb_get_thing.mp4" controls width="800"></video><br/><br/>
+Ajoutons une autre route à notre application, juste après notre route POST :<br><br>
+<div class="tableau_double" style="display: flex;">
+  <div class="code">
+    app.get('/api/stuff/:id', (req, res, next) => {<br>
+      Thing.findOne({ _id: req.params.id })<br>
+        .then(thing => res.status(200).json(thing))<br>
+        .catch(error => res.status(404).json({ error }));<br>
+    });
+  </div>
+<ul>Dans cette route :
+  <li>nous utilisons la méthode <strong><u> get() </u></strong> pour répondre uniquement aux demandes GET à cet endpoint ;</li>
+  <li>nous utilisons deux-points <strong><u> : </u></strong> en face du segment dynamique de la route pour la rendre accessible en tant que paramètre ;</li>
+  <li>nous utilisons ensuite la méthode <strong><u> findOne() </u></strong> dans notre modèle <strong><u> Thing </u></strong> pour trouver le <strong><u> Thing </u></strong> unique ayant le même <strong><u> _id </u></strong> que le paramètre de la requête ;</li>
+  <li>ce <strong><u> Thing </u></strong> est ensuite retourné dans une Promise et envoyé au front-end ;</li>
+  <li>si aucun <strong><u> Thing </u></strong> n'est trouvé ou si une erreur se produit, nous envoyons une erreur 404 au front-end, avec l'erreur générée.</li>
+</ul>
+</div><br>
+Maintenant, notre application commence vraiment à prendre forme !<br>
+Nous pouvons créer des objets et les voir apparaître immédiatement dans notre boutique en ligne grâce à la base de données.<br>
+Et nous pouvons même ouvrir un objet en particulier pour obtenir les informations de cet objet précis, via la base de données.<br>
+Dans le chapitre suivant, nous implémenterons nos boutons Modifier et Supprimer pour terminer la partie <strong><u> Thing </u></strong> de notre API.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="put_delete_data">- Modifiez et supprimez des données -</h2> 
+
+  <h3>Mettez à jour un Thing existant</h3>
+  <video src="media/6_7_mongodb_put_thing.mp4" controls width="800"></video><br/><br/>
+  Ajoutons une autre route à notre application, juste en dessous de notre route <strong>GET</strong> individuelle.<br>
+  Cette fois, elle répondra aux requêtes <strong>PUT</strong> :<br><br>
+  <div class="tableau_double" style="display: flex;">
+    <div class="code">
+      app.put('/api/stuff/:id', (req, res, next) => {<br>
+        Thing.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })<br>
+          .then(() => res.status(200).json({ message: 'Objet modifié !'}))<br>
+          .catch(error => res.status(400).json({ error }));<br>
+      });<br>
+    </div>
+  <ul>Dans cette route :
+    <li>Ci-dessus, nous exploitons la méthode <strong><u> updateOne() </u></strong> dans notre modèle <strong><u> Thing </u></strong>;</li>
+    <li>Cela nous permet de mettre à jour le <strong><u> Thing </u></strong> qui correspond à l'objet que nous passons comme premier argument;</li>
+    <li>Nous utilisons aussi le paramètre <strong><u> id </u></strong> passé dans la demande et le remplaçons par le <strong><u> Thing </u></strong> passé comme second argument.</li>
+  </ul>
+  </div><br>
+  <div class="important">
+    L'utilisation du mot-clé <strong><u> new </u></strong> avec un modèle Mongoose crée par défaut un champ  <strong><u> _id </u></strong>.<br>
+    Utiliser ce mot-clé générerait une erreur, car nous tenterions de modifier un champ immuable dans un document de la base de données.<br>
+    Par conséquent, nous devons utiliser le paramètre <strong><u> id </u></strong> de la requête pour configurer notre Thing avec le même <strong><u> _id </u></strong> qu'avant.
+  </div><br><br>
+  Vous pouvez maintenant tester votre nouvelle route : cliquez sur un <strong><u> Thing </u></strong> de l'application, puis sur son bouton Modifier, changez ses paramètres puis sauvegardez.<br>
+  Vous envoyez alors un <strong><u> Thing </u></strong> modifié au back-end.<br>
+  En revenant sur la page des articles, vous devriez retrouver votre article modifié.
+  
+  <h3>Suppression d'un Thing</h3>
+  <video src="media/6_8_mongodb_delete_thing.mp4" controls width="800"></video><br/><br/>
+  Il est temps d'ajouter une dernière route, la route <strong>DELETE</strong> :<br><br>
+  <div class="tableau_double" style="display: flex;">
+    <div class="code">
+      app.delete('/api/stuff/:id', (req, res, next) => {<br>
+        Thing.deleteOne({ _id: req.params.id })<br>
+          .then(() => res.status(200).json({ message: 'Objet supprimé !'}))<br>
+          .catch(error => res.status(400).json({ error }));<br>
+      });<br>
+    </div>
+  <ul>Dans cette route :
+    <li>La méthode <strong><u> deleteOne() </u></strong> de notre modèle fonctionne comme <strong><u></u> findOne() </strong> et <strong><u> updateOne() </u></strong> dans le sens où nous lui passons un objet correspondant au document à supprimer;</li>
+    <li>Nous envoyons ensuite une réponse de réussite ou d'échec au front-end.</li>
+  </ul>
+  </div><br><br>
+  <ul>Désormais, votre application implémente le <strong>CRUD</strong> complet :
+    <li><strong>create</strong> (création de ressources) ;</li>
+    <li><strong>read</strong> (lecture de ressources) ;</li>
+    <li><strong>update</strong> (modification de ressources) ;</li>
+    <li><strong>delete</strong> (suppression de ressources).</li>
+  </ul>
+  L'application permet donc désormais un parcours client complet !
+  <h3>En résumé</h3>
+  <ul>Dans cette partie du cours :
+    <li>vous avez configuré votre base de données MongoDB et l'avez connectée à votre application Express ;</li>
+    <li>vous avez utilisé Mongoose pour créer un modèle de données afin de faciliter les opérations de la base de données ;</li>
+    <li>vous avez implémenté, dans votre application Express, les routes CRUD qui exploitent votre modèle de données Mongoose, rendant ainsi votre application entièrement dynamique.</li>
+  </ul>
+  Dans la partie suivante de ce cours, nous nous pencherons sur une thématique extrêmement importante : <strong>la sécurité</strong>.
+
+
+  <h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="backend_structure">- Optimisez la structure du back-end -</h2>
+  Avant de nous lancer dans le sujet complexe qu'est l'authentification, nous allons réorganiser la structure de notre back-end pour en faciliter la compréhension et la gestion.<br>
+  Il est techniquement possible de conserver toute notre logique dans le fichier <strong><u> app.js </u></strong>, mais ce fichier peut vite devenir bien trop volumineux, ce qui compliquerait la gestion.<br>
+  Par conséquent, rendons les choses un peu plus modulaires.
+  <h3 id="routage">Configurez le routage</h3>
+  <video src="media/7_1_router.mp4" controls width="800"></video><br/><br/>
+  La première chose que nous allons faire est de dissocier notre logique de routing et la logique globale de l'application.<br>
+  Créez, dans votre dossier <strong><u> backend </u></strong>, un dossier <strong><u> routes </u></strong> puis, dans ce nouveau dossier, un fichier <strong><u> stuff.js </u></strong>.<br>
+  Celui-ci contiendra la logique de nos routes stuff :<br>
+  <div class="code">
+    const express = require('express');<br>
+    <br>
+    const router = express.Router();<br>
+    <br>
+    module.exports = router;<br>
+  </div><br>
+  Ci-dessus, nous créons un routeur Express.<br>
+  Jusqu'à présent, nous avions enregistré nos routes directement dans notre application<strong><u> app.js </u></strong>.<br>
+  Maintenant, nous allons les enregistrer dans notre routeur Express, puis enregistrer celui-ci dans l'application.<br><br>
+
+  Il est temps de couper toutes nos routes de <strong><u> app.js </u></strong> et de les coller dans notre routeur.<br>
+  Veillez à remplacer toutes les occurrences de <strong><u> app </u></strong> par <strong><u> router </u></strong>, car nous enregistrons les routes dans notre routeur :<br>
+  <div class="code">
+    const express = require('express');<br>
+const router = express.Router();<br>
+<br>
+const Thing = require('../models/thing');<br>
+<br>
+router.post('/', (req, res, next) => {<br>
+  const thing = new Thing({<br>
+    title: req.body.title,<br>
+    description: req.body.description,<br>
+    imageUrl: req.body.imageUrl,<br>
+    price: req.body.price,<br>
+    userId: req.body.userId<br>
+  });<br>
+  thing.save().then(<br>
+    () => {<br>
+      res.status(201).json({<br>
+        message: 'Post saved successfully!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+});<br>
+<br>
+router.get('/:id', (req, res, next) => {<br>
+  Thing.findOne({<br>
+    _id: req.params.id<br>
+  }).then(<br>
+    (thing) => {<br>
+      res.status(200).json(thing);<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(404).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+});<br>
+<br>
+router.put('/:id', (req, res, next) => {<br>
+  const thing = new Thing({<br>
+    _id: req.params.id,<br>
+    title: req.body.title,<br>
+    description: req.body.description,<br>
+    imageUrl: req.body.imageUrl,<br>
+    price: req.body.price,<br>
+    userId: req.body.userId<br>
+  });<br>
+  Thing.updateOne({_id: req.params.id}, thing).then(<br>
+    () => {<br>
+      res.status(201).json({<br>
+        message: 'Thing updated successfully!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+});<br>
+<br>
+router.delete('/:id', (req, res, next) => {<br>
+  Thing.deleteOne({_id: req.params.id}).then(<br>
+    () => {<br>
+      res.status(200).json({<br>
+        message: 'Deleted!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+});<br>
+<br>
+router.get('/' +<br>
+  '', (req, res, next) => {<br>
+  Thing.find().then(<br>
+    (things) => {<br>
+      res.status(200).json(things);<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+});<br>
+<br>
+module.exports = router;<br>
+  </div><br><br>
+  <div class="remarque">
+    <strong><u> /api/stuff </u></strong> doit être supprimé de chaque segment de route.<br>
+    Si cela supprime une chaîne de route, veillez à laisser une barre oblique <strong><u> / </u></strong> (reportez-vous au code ci-dessus).<br>
+    Veillez également à remplacer l'élément <strong><u> app.use() </u></strong> final par <strong><u> app.get() </u></strong> si ce n'est pas déjà fait, car cette route ne concerne que les demandes <strong>GET</strong>.  
+  </div><br><br>
+
+  Nous devons désormais enregistrer notre nouveau routeur dans notre fichier <strong><u> app.js </u></strong>.<br>
+  D'abord, nous devons l'importer :<br>
+  <div class="code">
+    const stuffRoutes = require('./routes/stuff');
+  </div><br><br>
+  Nous l'enregistrerons ensuite comme nous le ferions pour une route unique.<br>
+  Nous voulons enregistrer notre routeur pour toutes les demandes effectuées vers <strong><u> /api/stuff </u></strong> .<br>
+  Par conséquent, tapez :<br>
+<div class="code">
+  app.use('/api/stuff', stuffRoutes);
+</div><br><br>
+Restez dans la section « Parties 1 + 2 » pour le moment.<br>
+Si vous actualisez l'application front-end, tout devrait encore fonctionner comme avant.
+
+<h3 id="controleur">Configurez les contrôleurs</h3>
+<video src="media/7_2_controller.mp4" controls width="800"></video><br/><br/>
+Pour rendre notre structure encore plus modulaire, simplifier la lecture et la gestion de notre code, nous allons séparer la logique métier de nos routes en contrôleurs.<br><br>
+
+Créez un dossier <strong><u> controllers </u></strong> dans votre dossier backend et créez un autre fichier <strong><u> stuff.js </u></strong>.<br>
+Celui-ci sera notre contrôleur <strong><u> stuff </u></strong>.<br>
+Copions le premier élément de logique métier de la route <strong>POST</strong> vers notre contrôleur :<br>
+<div class="code">
+  <span style="color:rgb(140, 140, 140);">// in controllers/stuff.js</span><br>
+  <br>
+const Thing = require('../models/thing');<br>
+<br>
+exports.createThing = (req, res, next) => {<br>
+  const thing = new Thing({<br>
+    title: req.body.title,<br>
+    description: req.body.description,<br>
+    imageUrl: req.body.imageUrl,<br>
+    price: req.body.price,<br>
+    userId: req.body.userId<br>
+  });<br>
+  thing.save().then(<br>
+    () => {<br>
+      res.status(201).json({<br>
+        message: 'Post saved successfully!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+};<br>
+</div><br>
+
+Ici, nous exposons la logique de notre route <strong> POST </strong>en tant que fonction appelée <strong><u> createThing() </u></strong>.<br>
+Pour réimplémenter cela dans notre route, nous devons importer notre contrôleur puis enregistrer <strong><u> createThing </u></strong>:<br>
+<div class="code">
+  <span style="color:rgb(140, 140, 140);"> // in routes/stuff.js</span><br>
+<br>
+const stuffCtrl = require('../controllers/stuff');<br>
+<br>
+router.get('/', stuffCtrl.getAllStuff);<br>
+</div><br>
+Nous pouvons maintenant faire de même pour toutes nos autres routes.<br>
+Voici le contrôleur final :<br>
+<div class="code">
+  const Thing = require('../models/thing');<br>
+  <br>
+exports.createThing = (req, res, next) => {<br>
+  const thing = new Thing({<br>
+    title: req.body.title,<br>
+    description: req.body.description,<br>
+    imageUrl: req.body.imageUrl,<br>
+    price: req.body.price,<br>
+    userId: req.body.userId<br>
+  });<br>
+  thing.save().then(<br>
+    () => {<br>
+      res.status(201).json({<br>
+        message: 'Post saved successfully!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+};<br>
+<br>
+exports.getOneThing = (req, res, next) => {<br>
+  Thing.findOne({<br>
+    _id: req.params.id<br>
+  }).then(<br>
+    (thing) => {<br>
+      res.status(200).json(thing);<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(404).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+};<br>
+<br>
+exports.modifyThing = (req, res, next) => {<br>
+  const thing = new Thing({<br>
+    _id: req.params.id,<br>
+    title: req.body.title,<br>
+    description: req.body.description,<br>
+    imageUrl: req.body.imageUrl,<br>
+    price: req.body.price,<br>
+    userId: req.body.userId<br>
+  });<br>
+  Thing.updateOne({_id: req.params.id}, thing).then(<br>
+    () => {<br>
+      res.status(201).json({<br>
+        message: 'Thing updated successfully!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+};<br>
+<br>
+exports.deleteThing = (req, res, next) => {<br>
+  Thing.deleteOne({_id: req.params.id}).then(<br>
+    () => {<br>
+      res.status(200).json({<br>
+        message: 'Deleted!'<br>
+      });<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+};<br>
+<br>
+exports.getAllStuff = (req, res, next) => {<br>
+  Thing.find().then(<br>
+    (things) => {<br>
+      res.status(200).json(things);<br>
+    }<br>
+  ).catch(<br>
+    (error) => {<br>
+      res.status(400).json({<br>
+        error: error<br>
+      });<br>
+    }<br>
+  );<br>
+};<br>
+</div><br>
+Voici notre routeur final :<br>
+<div class="code">
+  const express = require('express');<br>
+const router = express.Router();<br>
+<br>
+const stuffCtrl = require('../controllers/stuff');<br>
+<br>
+router.get('/', stuffCtrl.getAllStuff);<br>
+router.post('/', stuffCtrl.createThing);<br>
+router.get('/:id', stuffCtrl.getOneThing);<br>
+router.put('/:id', stuffCtrl.modifyThing);<br>
+router.delete('/:id', stuffCtrl.deleteThing);<br>
+<br>
+module.exports = router;<br>
+</div><br>
+Comme vous le voyez, cela facilite la compréhension de notre fichier de routeur.<br>
+Il est évident quelles routes sont disponibles à quels points de terminaison, et les noms descriptifs donnés aux fonctions de notre contrôleur permettent de mieux comprendre la fonction de chaque route.<br><br>
+Structurer le code de manière modulaire comme cela n'est pas absolument nécessaire pour chaque projet, mais c'est une bonne habitude à prendre car cela simplifie la maintenance.<br><br>
+Maintenant que tout est prêt, commençons à implémenter l'authentification utilisateur.
+
+Maintenant que tout est prêt, commençons à implémenter l'authentification utilisateur.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="authentification_database">- Préparez la base de données pour les informations d'authentification -</h2>
+
+ <h3>Comprenez le stockage de mot de passe sécurisé</h3>
+ Dans les chapitres suivants, nous implémenterons l'authentification par e-mail et mot de passe pour notre API.<br>
+ Cela implique de stocker des mots de passe utilisateur dans notre base de données d'une manière ou d'une autre.<br>
+ Ce que nous ne voulons certainement pas faire est de les stocker sous la forme de texte brut : quiconque accéderait à notre base de données verrait la liste complète des informations de connexion de tous les utilisateurs.<br>
+ À la place, nous stockerons le mot de passe de chaque utilisateur sous la forme d'un hash ou d'une chaîne chiffrée.<br>
+Le package de chiffrement que nous utiliserons, <strong><u> bcrypt </u></strong>, utilise un algorithme unidirectionnel pour chiffrer et créer un hash des mots de passe utilisateur, que nous stockerons ensuite dans le document de la base de données relatif à chaque utilisateur.<br>
+Lorsqu'un utilisateur tentera de se connecter, nous utiliserons <strong><u> bcrypt </u></strong> pour créer un hash avec le mot de passe entré, puis le comparerons au hash stocké dans la base de données.<br>
+Ces deux hash ne seront pas les mêmes : cela poserait un problème de sécurisation, car les pirates informatiques n'auraient qu'à deviner les mots de passe jusqu'à ce que les hash correspondent.<br>
+Le package <strong><u> bcrypt </u></strong> permet d'indiquer si les deux hash ont été générés à l'aide d'un même mot de passe initial.<br>
+Il nous aidera donc à implémenter correctement le stockage et la vérification sécurisés des mots de passe.<br>
+La première étape de l'implémentation de l'authentification est de créer un modèle de base de données pour les informations de nos utilisateurs.
+
+<h3>Créez un modèle de données</h3>
+<video src="media/7_3_user.mp4" controls width="800"></video><br/><br/>
+
+Pour s'assurer que deux utilisateurs ne peuvent pas utiliser la même adresse e-mail, nous utiliserons le mot clé <strong><u> unique </u></strong> pour l'attribut email du schéma d'utilisateur <strong><u> userSchema </u></strong>.<br>
+Les erreurs générées par défaut par MongoDB pouvant être difficiles à résoudre, nous installerons un package de validation dans le <strong><u> Backend </u></strong> pour pré-valider les informations avant de les enregistrer :<br>
+<div class="code">
+  npm install --save mongoose-unique-validator
+</div><br/>
+Ce package une fois installé, nous pouvons créer notre propre modèle utilisateur :<br/>
+<div class="code">
+  const mongoose = require('mongoose');<br/>
+const uniqueValidator = require('mongoose-unique-validator');<br/>
+<br/>
+const userSchema = mongoose.Schema({<br/>
+  email: { type: String, required: true, unique: true },<br/>
+  password: { type: String, required: true }<br/>
+});<br/>
+<br/>
+userSchema.plugin(uniqueValidator);<br/>
+<br/>
+module.exports = mongoose.model('User', userSchema);<br/>
+</div><br/>
+
+Dans notre schéma, la valeur <strong><u> unique </u></strong>, avec l'élément <strong><u> mongoose-unique-validator </u></strong> passé comme plug-in, s'assurera qu'aucun des deux utilisateurs ne peut partager la même adresse e-mail.
+
+Maintenant que notre modèle est prêt, nous allons commencer à l'utiliser dans le chapitre suivant pour enregistrer les nouveaux utilisateurs dans notre base de données et appliquer le chiffrement de mot de passe.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="user_create">- Créez des utilisateurs -</h2> 
+
+  <h3 id="routage_user">Configurez les routes d'authentification</h3>
+  <video src="media/7_4_user_route.mp4" controls width="800"></video><br/><br/>
+  Commençons par créer l'infrastructure nécessaire à nos routes d'authentification.<br>
+  Il nous faudra un contrôleur et un routeur, puis nous devrons enregistrer ce routeur dans notre application Express.<br><br>
+  D'abord, créez un fichier <strong><u> user.js </u></strong> dans votre dossier controllers :<br>
+  <div class="code">
+    exports.signup = (req, res, next) => {<br>
+      <br>
+    };<br>
+    <br>
+    exports.login = (req, res, next) => {<br>
+      <br>
+    };<br>
+  </div><br>
+  Nous implémenterons ces fonctions bientôt.<br><br>
+   Pour l'instant, terminons la création des routes.<br>
+   Pour ce faire, créez un autre fichier user.js , cette fois dans votre dossier routes :<br>
+   <div class="code">
+    const express = require('express');<br>
+    const router = express.Router();<br>
+    <br>
+    const userCtrl = require('../controllers/user');<br>
+    <br>
+    router.post('/signup', userCtrl.signup);<br>
+    router.post('/login', userCtrl.login);<br>
+    <br>
+    module.exports = router;<br>
+   </div><br>
+   <div class="important">Les routes fournies sont celles prévues par l'application front-end.</div><br><br>
+   <div class="important">
+    N'oubliez pas que le segment de route indiqué ici est uniquement le segment final, car le reste de l'adresse de la route sera déclaré dans notre application Express.
+   </div><br><br>
+   Maintenant, enregistrons notre routeur dans notre application.<br>
+   Pour ce faire, importez le routeur dans <strong><u>app.js </u></strong> :<br>
+   <div class="code">
+    const userRoutes = require('./routes/user');
+   </div><br>
+   Puis enregistrez-le :<br>
+   <div class="code">
+    app.use('/api/stuff', stuffRoutes);<br>
+    app.use('/api/auth', userRoutes);<br>
+   </div><br>
+   Nos routes sont maintenant prêtes.<br>
+   Il est temps de commencer l'implémentation de la logique métier.
+
+   <h3 id="create_user">Créez des utilisateurs</h3>
+   <video src="media/7_5_user_create.mp4" controls width="800"></video><br/><br/>
+   Il nous faudra le package de chiffrement <strong><u> bcrypt </u></strong> pour notre fonction <strong><u> signup </u></strong>.<br>
+  Installons-le donc dans notre projet dans le <strong><u> backend </u></strong>:<br>
+  <div class="code">
+    npm install --save bcrypt<br>
+  </div><br>
+  Nous pouvons l'importer dans notre contrôleur et implémenter notre fonction  <strong><u>signup </u></strong>(n'oubliez pas d'importer votre modèle <strong><u> User </u></strong>!) :<br>
+<div class="tableau_double" style="display: flex;">
+
+<div class="code">
+  exports.signup = (req, res, next) => {<br>
+    bcrypt.hash(req.body.password, 10)<br>   <span style="color:rgb(140, 140, 140);">// 10 nombre de fois ou le hachage sera executé</span>
+      .then(hash => {<br>
+        const user = new User({<br>
+          email: req.body.email,<br>
+          password: hash<br>
+        });<br>
+        user.save()<br>
+          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))<br>
+          .catch(error => res.status(400).json({ error }));<br>
+      })<br>
+      .catch(error => res.status(500).json({ error }));<br>
+  };<br>
+</div>
+<ul>Dans cette fonction :
+  <li>nous appelons la fonction de hachage de <strong><u> bcrypt </u></strong> dans notre mot de passe et lui demandons de « saler » le mot de passe 10 fois.<br>
+     Plus la valeur est élevée, plus l'exécution de la fonction sera longue, et plus le hachage sera sécurisé.<br>
+     Pour plus d'informations, consultez la <a href="https://www.npmjs.com/package/bcrypt" target="_blank">documentation de bcrypt</a> ;</li>
+  <li>il s'agit d'une fonction asynchrone qui renvoie une Promise dans laquelle nous recevons le hash généré ;</li>
+  <li>dans notre bloc <strong><u> then </u></strong>, nous créons un utilisateur et l'enregistrons dans la base de données,<br>
+     en renvoyant une réponse de réussite en cas de succès, et des erreurs avec le code d'erreur en cas d'échec ;</li>
+</ul>
+</div><br>
+
+Dans le chapitre suivant, nous implémenterons notre fonction <strong><u> login </u></strong> pour vérifier les informations d'identification des utilisateurs pour leur permettre de se connecter. 
+
+
+  <h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="auth_user">- Vérifiez les informations d'identification d'un utilisateur -</h2> 
+
+  <h3>Implémentez la fonction login</h3>
+  <video src="media/7_6_auth_user.mp4" controls width="800"></video><br/><br/>
+  Maintenant que nous pouvons créer des utilisateurs dans la base de données, il nous faut une méthode permettant de vérifier si un utilisateur qui tente de se connecter dispose d'identifiants valides.<br>
+  Implémentons donc notre fonction <strong><u></u> login </strong> :<br>
+  <div class="tableau_double" style="display: flex;">
+  <div class="code">
+    exports.login = (req, res, next) => {<br>
+      User.findOne({ email: req.body.email })<br>
+        .then(user => {<br>
+          if (!user) {<br>
+            return res.status(401).json({ error: 'Utilisateur non trouvé !' });<br>
+          }<br>
+          bcrypt.compare(req.body.password, user.password)<br>
+            .then(valid => {<br>
+              if (!valid) {<br>
+                return res.status(401).json({ error: 'Mot de passe incorrect !' });<br>
+              }<br>
+              res.status(200).json({userId: user._id, token: 'TOKEN'});
+              <br>
+            })<br>
+            .catch(error => res.status(500).json({ error }));<br>
+        })<br>
+        .catch(error => res.status(500).json({ error }));<br>
+    };<br>
+  </div><br>
+<ul>Dans cette fonction :
+  <li>
+    nous utilisons notre modèle Mongoose pour vérifier que l'e-mail entré par l'utilisateur correspond à un utilisateur existant de la base de données :
+    <ul>
+      <li>dans le cas contraire, nous renvoyons une erreur <strong><u> 401 Unauthorized </u></strong>,</li>
+      <li>si l'e-mail correspond à un utilisateur existant, nous continuons ;</li>
+    </ul>
+  </li>
+  <li>
+    nous utilisons la fonction compare debcrypt pour comparer le mot de passe entré par l'utilisateur avec le hash enregistré dans la base de données :
+    <ul>
+      <li>s'ils ne correspondent pas, nous renvoyons une erreur <strong><u> 401 Unauthorized </u></strong> et un message « Mot de passe incorrect ! » ;</li>
+      <li>s'ils correspondent, les informations d'identification de notre utilisateur sont valides.<br>
+         Dans ce cas, nous renvoyons une réponse <strong><u> 200 </u></strong> contenant l'ID utilisateur et un <strong>token</strong>.<br>
+         Ce token est une chaîne générique pour l'instant, mais nous allons le modifier et le crypter dans le prochain chapitre.</li>
+    </ul>
+  </li>
+</ul>
+</div><br>
+
+<div class="important">
+  Avant d'utiliser la section « Partie 3 » de l'application front-end, supprimez tous les articles en vente de la section « Parties 1+2 ».<br>
+  Sinon, vous ne pourrez plus les modifier.<br>
+  En effet, comme ils ont été créés à l'aide d'un ID utilisateur générique, ils ne sont pas modifiables par des utilisateurs créés à partir de maintenant.
+</div>
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="auth_token">- Créez des tokens d'authentification -</h2> <br>
+  <video src="media/7_7_token_init.mp4" controls width="800"></video><br/><br/>
+  Les tokens d'authentification permettent aux utilisateurs de ne se connecter qu'une seule fois à leur compte.<br>
+  Au moment de se connecter, ils recevront leur token et le renverront automatiquement à chaque requête par la suite.<br>
+  Ceci permettra au back-end de vérifier que la requête est authentifiée.<br><br>
+
+Pour pouvoir créer et vérifier les tokens d'authentification, il nous faudra un nouveau package :<br>
+<div class="code">
+  npm install --save jsonwebtoken
+</div><br><br>
+Nous l'importerons ensuite dans notre contrôleur utilisateur :<br>
+<div class="code">
+  const jwt = require('jsonwebtoken');
+</div><br><br>
+Enfin, nous l'utiliserons dans notre fonction <strong><u> login </u></strong>:<br>
+<div class="tableau_double" style="display: flex;">
+<div class="code">
+  exports.login = (req, res, next) => {<br>
+    User.findOne({ email: req.body.email })<br>
+      .then(user => {<br>
+        if (!user) {<br>
+          return res.status(401).json({ error: 'Utilisateur non trouvé !' });<br>
+        }<br>
+        bcrypt.compare(req.body.password, user.password)<br>
+          .then(valid => {<br>
+            if (!valid) {<br>
+              return res.status(401).json({ error: 'Mot de passe incorrect !' });<br>
+            }<br>
+            res.status(200).json({userId: user._id,<br>
+              <span style="color:red;">token: jwt.sign(<br>
+                { userId: user._id },<br>
+                'RANDOM_TOKEN_SECRET',<br>
+                { expiresIn: '24h' }<br></span>
+              )<br>
+            });<br>
+          })<br>
+          .catch(error => res.status(500).json({ error }));<br>
+      })<br>
+      .catch(error => res.status(500).json({ error }));<br>
+  };<br>
+</div>
+<ul>Dans le code ci-dessus :
+  <li>nous utilisons la fonction <strong><u> sign </u></strong> de <strong><u> jsonwebtoken </u></strong> pour encoder un nouveau token ;</li>
+  <li>ce token contient l'ID de l'utilisateur en tant que payload (les données encodées dans le token) ;</li>
+  <li>nous utilisons une chaîne secrète de développement temporaire <strong><u> RANDOM_SECRET_KEY </u></strong> pour encoder notre token (à remplacer par une chaîne aléatoire beaucoup plus longue pour la production) ;</li>
+  <li>nous définissons la durée de validité du token à 24 heures. L'utilisateur devra donc se reconnecter au bout de 24 heures ;</li>
+  <li>nous renvoyons le token au front-end avec notre réponse.</li>
+</ul>
+</div><br>
+
+Vous pouvez désormais utiliser l'onglet « Réseau » de Chrome DevTools pour vérifier que, une fois connecté, chaque requête provenant du front-end contient bien un en-tête « Authorization » avec le mot-clé « Bearer » et une longue chaîne encodée.<br>
+Il s'agit de notre token !
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+  <h2 id="auth_middleware">- Configurez le middleware d'authentification -</h2> <br>
+
+  <video src="media/7_8_token_middleware.mp4" controls width="800"></video><br/><br/>
+  Nous allons à présent créer le middleware qui protégera les routes sélectionnées et vérifier que l'utilisateur est authentifié avant d'autoriser l'envoi de ses requêtes.<br>
+  Créez un dossier <strong><u> middleware </u></strong> et un fichier <strong><u> auth.js </u></strong> à l'intérieur :<br>
+  <div class="tableau_double" style="display: flex;">
+  <div class="code">
+    const jwt = require('jsonwebtoken');<br>
+    <br>
+  module.exports = (req, res, next) => {<br>
+  try {<br>
+    const token = req.headers.authorization.split(' ')[1];<br>
+    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');<br>
+    const userId = decodedToken.userId;<br>
+    if (req.body.userId && req.body.userId !== userId) {throw 'Invalid user ID';<br>
+    } else {<br>
+      next();<br>
+    }<br>
+  } catch {<br>
+    res.status(401).json({error: new Error('Invalid request!')});<br>
+  }<br>
+};<br>
+  </div><br><br>
+  <ul style="margin-top:2rem">Dans ce middleware :
+    <li style="margin-top:2rem">étant donné que de nombreux problèmes peuvent se produire, nous insérons tout à l'intérieur d'un bloc <strong><u> try...catch </u></strong>;</li>
+    <li>nous extrayons le token du header <strong><u> Authorization </u></strong> de la requête entrante.<br>
+      N'oubliez pas qu'il contiendra également le mot-clé <strong><u> Bearer </u></strong>.<br>
+      Nous utilisons donc la fonction <strong><u> split </u></strong> pour récupérer tout après l'espace dans le header.<br>
+      Les erreurs générées ici s'afficheront dans le bloc <strong><u> catch ;</u></strong></li>
+    <li>nous utilisons ensuite la fonction <strong><u> verify </u></strong> pour décoder notre token.<br>
+      Si celui-ci n'est pas valide, une erreur sera générée ;</li>
+    <li>nous extrayons l'ID utilisateur de notre token ;</li>
+    <li>si la demande contient un ID utilisateur, nous le comparons à celui extrait du token.<br>
+      S'ils sont différents, nous générons une erreur ;</li>
+    <li>dans le cas contraire, tout fonctionne et notre utilisateur est authentifié.<br>
+      Nous passons l'exécution à l'aide de la fonction <strong><u> next() </u></strong>.</li>
+  </ul>
+</div><br><br>
+Maintenant, nous devons appliquer ce middleware à nos routes <strong><u> stuff </u></strong>, qui sont celles à protéger.<br>
+Dans notre routeur <strong><u> stuff </u></strong> , nous importons notre middleware et le passons comme argument aux routes à protéger :<br>
+  <div class="code">
+    const express = require('express');<br>
+    const router = express.Router();<br>
+    <br>
+    const auth = require('../middleware/auth');<br>
+    <br>
+    const stuffCtrl = require('../controllers/stuff');<br>
+    <br>
+    router.get('/', auth, stuffCtrl.getAllStuff);<br>
+    router.post('/', auth, stuffCtrl.createThing);<br>
+    router.get('/:id', auth, stuffCtrl.getOneThing);<br>
+    router.put('/:id', auth, stuffCtrl.modifyThing);<br>
+    router.delete('/:id', auth, stuffCtrl.deleteThing);<br>
+    <br>
+    module.exports = router;<br>
+  </div><br>
+  Désormais, à partir du front-end, vous devriez être capable de vous connecter et d'utiliser normalement l'application.<br>
+  Pour vérifier que les requêtes non autorisées ne fonctionnent pas, vous pouvez utiliser une application (telle que Postman) pour passer une demande sans en-tête <strong><u> Authorization </u></strong>.<br>
+  L'API refusera l'accès et renverra une réponse 401.<br>
+  Votre API implémente à présent l'authentification par token et est correctement sécurisée.
+
+<h3>En résumé</h3>
+<ul>
+  <li>vous avez ajouté un modèle de données User afin de stocker les informations utilisateur dans votre base de données ;</li>
+  <li>vous avez implémenté le cryptage de mot de passe sécurisé afin de stocker en toute sécurité les mots de passe utilisateur ;</li>
+  <li>vous avez créé et envoyé des tokens au front-end pour authentifier les requêtes ;</li>
+  <li>vous avez ajouté le middleware d'authentification pour sécuriser les routes dans votre API.<br>
+    De cette façon, seules les requêtes authentifiées seront gérées.</li>
+</ul>
+
+
+  <h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="multer">4.1 - Acceptez les fichiers entrants avec multer -</h2> 
+
+  Nous allons implémenter des <strong>téléchargements de fichiers</strong> pour que les utilisateurs puissent télécharger des images d'articles à vendre.<br>
+  Pour ce faire, nous utiliserons <strong>multer</strong> , un package qui nous permet de gérer les fichiers entrants dans les requêtes HTTP.<br>
+  Commençons par installer multer et par créer un élément de middleware pour gérer ces fichiers entrants.
+
+<h3>Configurez le middleware de gestion des fichiers</h3>
+<video src="media/8_1_Multer.mp4" controls width="800"></video><br/><br/>
+Nous devrons d'abord installer <strong><u> multer </u></strong> dans notre projet :<br>
+<div class="code">npm install --save multer</div><br>
+Les images seront enregistrées dans un sous-dossier appelé<strong><u> images </u></strong>.<br>
+Créez donc ce sous-dossier dans votre dossier <strong><u>  backend </u></strong>.<br>
+Vous pouvez maintenant créer un middleware dans notre dossier <strong><u> middleware </u></strong> appelé <strong><u> multer-config.js </u></strong> :<br>
+<div class="tableau_double" style="display: flex;">
+<div class="code">
+  const multer = require('multer');<br>
+  <br>
+const MIME_TYPES = {<br>
+  'image/jpg': 'jpg',<br>
+  'image/jpeg': 'jpg',<br>
+  'image/png': 'png'<br>
+};<br>
+<br>
+const storage = multer.diskStorage({<br>
+  destination: (req, file, callback) => {<br>
+    callback(null, 'images');<br>
+  },<br>
+  filename: (req, file, callback) => {<br>
+    const name = file.originalname.split(' ').join('_');<br>
+    const extension = MIME_TYPES[file.mimetype];<br>
+    callback(null, name + Date.now() + '.' + extension);<br>
+  }<br>
+});<br>
+<br>
+module.exports = multer({storage: storage}).single('image');<br>
+</div><br>
+<ol  style="margin-top:40px" >Dans ce middleware :
+  <li style="margin-top:150px">nous créons une constante <strong><u> storage </u></strong>, à passer à <strong><u> multer </u></strong> comme configuration, qui contient la logique nécessaire pour indiquer à <strong><u> multer </u></strong> où enregistrer les fichiers entrants :
+  <ul>
+    <li>la fonction <strong><u> destination </u></strong> indique à <strong><u> multer </u></strong> d'enregistrer les fichiers dans le dossier <strong><u> images </u></strong>;</li>
+    <li>la fonction <strong><u> filename </u></strong> indique à <strong><u> multer </u></strong> d'utiliser le nom d'origine, de remplacer les espaces par des <strong><u> underscores </u></strong> et d'ajouter un timestamp <strong><u> Date.now() </u></strong> comme nom de fichier.<br>
+      Elle utilise ensuite la constante dictionnaire de type MIME pour résoudre l'extension de fichier appropriée ;</li>
+  </ul>
+  </li>
+  <li style="margin-top:80px">
+    nous exportons ensuite l'élément <strong><u> multer </u></strong> entièrement configuré, lui passons notre constante <strong><u> storage </u></strong> et lui indiquons que nous gérerons uniquement les téléchargements de fichiers image.
+  </li>
+</ol></div>
+Avant de pouvoir appliquer notre middleware à nos routes <strong><u> stuff </u></strong>, nous devrons les modifier quelque peu, car la structure des données entrantes n'est pas tout à fait la même avec des fichiers et des données JSON.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+
+<h2 id="routes_multer">4.2 - Modifiez les routes pour prendre en compte les fichiers -</h2> 
+Pour que notre middleware de téléchargement de fichiers fonctionne sur nos routes, nous devrons les modifier, car le format d'une requête contenant un fichier du front-end est différent.
+<h3>Modifiez la route POST</h3>
+<video src="media/8_2_route_Multer.mp4" controls width="800"></video><br/><br/>
+Tout d'abord, ajoutons notre middleware <strong><u> multer </u></strong> à notre route POST dans notre routeur <strong><u> stuff </u></strong> :<br>
+<div class="code">
+  const express = require('express');<br>
+  const router = express.Router();<br>
+  
+  const auth = require('../middleware/auth');<br>
+  <span style="color:red;">const multer = require('../middleware/multer-config');</span><br>
+  <br>
+  const stuffCtrl = require('../controllers/stuff');<br>
+  <br>
+  router.get('/', auth, stuffCtrl.getAllStuff);<br>
+  router.post('/', auth,<span style="color:red;"> multer</span>, stuffCtrl.createThing);<br>
+  router.get('/:id', auth, stuffCtrl.getOneThing);<br>
+  router.put('/:id', auth, stuffCtrl.modifyThing);<br>
+  router.delete('/:id', auth, stuffCtrl.deleteThing);<br>
+  <br>
+  module.exports = router;<br>
+</div><br>
+<div class="important">
+  L'ordre des middlewares est important !<br>
+  Si nous devons placer <strong><u> multer </u></strong> avant le middleware d'authentification, même les images des requêtes non authentifiées seront enregistrées dans le serveur.<br>
+  Veillez à placer <strong><u> multer </u></strong>  après <strong><u> auth </u></strong>!
+</div><br>
+Pour gérer correctement la nouvelle requête entrante, nous devons mettre à jour notre contrôleur :<br>
+<div class="tableau_double" style="display: flex;">
+<div class="code">
+  exports.createThing = (req, res, next) => {<br>
+    <span style="color:red;">const thingObject = JSON.parse(req.body.thing);</span><br>
+    delete <span style="color:red;">thingObject</span>._id;<br>
+    const thing = new Thing({<br>
+      ...<span style="color:red;">thingObject</span>,<br>
+      <span style="color:red;">imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`</span><br>
+    });<br>
+    thing.save()<br>
+      .then(() => res.status(201).json({ message: 'Objet enregistré !'}))<br>
+      .catch(error => res.status(400).json({ error }));<br>
+  };<br>
+</div><br>
+<ul>Que fait le code ci-dessus ?
+  <li>
+    Pour ajouter un fichier à la requête, le front-end doit envoyer les données de la requête sous la forme form-data, et non sous forme de JSON.<br>
+    Le corps de la requête contient une chaîne <strong><u> thing </u></strong>, qui est simplement un objet <strong><u> Thing </u></strong> converti en chaîne.<br>
+    Nous devons donc l'analyser à l'aide de <strong><u> JSON.parse() </u></strong> pour obtenir un objet utilisable.
+  </li>
+  <li>
+    Nous devons également résoudre l'URL complète de notre image, car <strong><u> req.file.filename </u></strong> ne contient que le segment filename .<br>
+    Nous utilisons <strong><u> req.protocol </u></strong> pour obtenir le premier segment (dans notre cas <strong><u> 'http' </u></strong>).<br>
+    Nous ajoutons <strong><u> '://' </u></strong>, puis utilisons <strong><u> req.get('host') </u></strong> pour résoudre l'hôte du serveur (ici, <strong><u> 'localhost:3000' </u></strong>).<br>
+    Nous ajoutons finalement <strong><u> '/images/' </u></strong> et le nom de fichier pour compléter notre URL.
+  </li>
+</ul>
+</div><br><br>
+<div class="remarque">
+  Pensez à utiliser la section Partie 4 !<br>
+  Si vous enregistrez le contrôleur en l'état et testez l'application, vous constaterez que presque tout fonctionne.<br>
+  Le seul problème que nous avons est l'erreur 404 que nous obtenons lors de la tentative d'extraction de l'image, alors que notre URL semble correcte.<br>
+  Que se passe-t-il donc ici ?
+</div><br>
+En fait, nous effectuons une demande GET vers <strong><u> http://localhost:3000/images/< image-name>.jpg</u></strong>.<br>
+Cela semble simple, mais n'oubliez pas que notre application s'exécute sur <strong><u> localhost:3000 </u></strong> et nous ne lui avons pas indiqué comment répondre aux requêtes transmises à cette route : elle renvoie donc une erreur 404.<br>
+Pour remédier à cela, nous devons indiquer à notre <strong><u> app.js </u></strong> comment traiter les requêtes vers la route <strong><u> /image </u></strong>, en rendant notre dossier <strong><u> images </u></strong> statique.<br>
+Il nous faudra une nouvelle importation dans <strong><u> app.js </u></strong>  pour accéder au path de notre serveur :<br>
+<div class="code">
+  const path = require('path'); 
+</div><br><br>
+De plus, nous ajoutons le gestionnaire de routage suivant juste au-dessus de nos routes actuelles :<br>
+<div class="code">
+  app.use('/images', express.static(path.join(__dirname, 'images')));
+</div><br><br>
+Cela indique à Express qu'il faut gérer la ressource<strong><u> images </u></strong> de manière statique (un sous-répertoire de notre répertoire de base, <strong><u> __dirname </u></strong> ) à chaque fois qu'elle reçoit une requête vers la route <strong><u> /images </u></strong> .<br>
+Enregistrez et actualisez l'application dans le navigateur ; désormais, tout devrait fonctionner correctement.<br>
+Et maintenant, occupons-nous de la route PUT !
+
+<h3>Modifiez la route PUT</h3>
+<video src="media/8_3_put_multer.mp4" controls width="800"></video><br/><br/>
+
+La modification de notre route PUT est sensiblement plus compliquée, car nous devons prendre en compte deux possibilités : l'utilisateur a mis à jour l'image, ou pas.<br>
+Dans le premier cas, nous recevrons l'élément form-data et le fichier.<br>
+Dans le second cas, nous recevrons uniquement les données JSON.<br><br>
+Tout d'abord, ajoutons <strong><u> multer </u></strong> comme middleware à notre route PUT :<br>
+<div class="code">
+  const express = require('express');<br>
+const router = express.Router();<br>
+<br>
+const auth = require('../middleware/auth');<br>
+const multer = require('../middleware/multer-config');<br>
+<br>
+const stuffCtrl = require('../controllers/stuff');<br>
+<br>
+router.get('/', auth, stuffCtrl.getAllStuff);<br>
+router.post('/', auth, multer, stuffCtrl.createThing);<br>
+router.get('/:id', auth, stuffCtrl.getOneThing);<br>
+router.put('/:id', auth, multer, stuffCtrl.modifyThing);<br>
+router.delete('/:id', auth, stuffCtrl.deleteThing);<br>
+<br>
+module.exports = router;<br>
+</div><br><br>
+À présent, nous devons modifier notre fonction <strong><u> modifyThing() </u></strong> pour voir si nous avons reçu ou non un nouveau fichier, et répondre en conséquence :<br>
+<div class="code">
+  exports.modifyThing = (req, res, next) => {<br>
+    const thingObject = req.file ?<br>
+      {<br>
+        ...JSON.parse(req.body.thing),<br>
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`<br>
+      } : { ...req.body };<br>
+    Thing.updateOne({ _id: req.params.id }, { ...thingObject, _id: req.params.id })<br>
+      .then(() => res.status(200).json({ message: 'Objet modifié !'}))<br>
+      .catch(error => res.status(400).json({ error }));<br>
+  };<br>
+</div><br><br>
+Dans cette version modifiée de la fonction, on crée un objet <strong><u> thingObject </u></strong> qui regarde si <strong><u>  req.file </u></strong> existe ou non.<br>
+S'il existe, on traite la nouvelle image ; s'il n'existe pas, on traite simplement l'objet entrant.<br>
+On crée ensuite une instance <strong><u>  Thing </u></strong> à partir de <strong><u> thingObject </u></strong> , puis on effectue la modification.<br><br>
+Notre application gère correctement les téléchargements de fichiers lorsque nous mettons de nouveaux articles en vente et lorsque nous modifions les articles existants.
+
+
+<h5><a href="#sommaire">Sommaire</a></h5>
+
+
+  <h2 id="delete_multer">- Développez la fonction delete du back-end -</h2> 
+  <h3>Modifiez la route DELETE</h3>
+  <video src="media/8_4_delte_multer.mp4" controls width="800"></video><br/><br/>
+  En ce qui concerne la gestion des fichiers dans notre back-end, il faut absolument nous assurer que, à chaque suppression d'un <strong><u> Thing </u></strong> de la base de données, le fichier image correspondant est également supprimé.<br><br>
+  Dans notre contrôleur <strong><u> stuff </u></strong>, il nous faut une nouvelle importation.<br>
+  Il s'agit du package <strong><u> fs </u></strong>de Node :<br>
+  <div class="code">
+    const fs = require('fs');
+  </div><br><br>
+  <div class="remarque">
+   <strong><u> fs </u></strong> signifie « file system » (soit « système de fichiers » en français).<br>
+   Il nous donne accès aux fonctions qui nous permettent de modifier le système de fichiers, y compris aux fonctions permettant de supprimer les fichiers.
+  </div><br><br>
+  À présent, nous pouvons modifier notre fonction <strong><u> deleteThing() </u></strong>:<br>
+  <div class="tableau_double" style="display: flex;">
+  <div class="code">
+    exports.deleteThing = (req, res, next) => {<br>
+      <span style="color:red;">Thing.findOne({ _id: req.params.id })<br>
+        .then(thing => {<br>
+          const filename = thing.imageUrl.split('/images/')[1];<br>
+          fs.unlink(`images/${filename}`, () => {</span><br>
+            Thing.deleteOne({ _id: req.params.id })<br>
+              .then(() => res.status(200).json({ message: 'Objet supprimé !'}))<br>
+              .catch(error => res.status(400).json({ error }));<br>
+          });<br>
+        })<br>
+        .catch(error => res.status(500).json({ error }));<br>
+    };<br>
+  </div><br>
+  <ul>Dans cette fonction :
+    <li>nous utilisons l'ID que nous recevons comme paramètre pour accéder au <strong><u> Thing </u></strong> correspondant dans la base de données ;</li>
+    <li>nous utilisons le fait de savoir que notre URL d'image contient un segment <strong><u> /images/ </u></strong> pour séparer le nom de fichier ;</li>
+    <li>nous utilisons ensuite la fonction <strong><u> unlink </u></strong> du package <strong><u> fs </u></strong> pour supprimer ce fichier, en lui passant le fichier à supprimer et le callback à exécuter une fois ce fichier supprimé ;</li>
+    <li>dans le callback, nous implémentons la logique d'origine, en supprimant le <strong><u> Thing </u></strong> de la base de données.</li>
+  </ul>
+  </div><br><br>
+  Notre API peut désormais gérer correctement toutes les opérations CRUD contenant des fichiers :<br>
+   lorsqu'un utilisateur crée un <strong><u> Thing </u></strong>, met à jour un <strong><u> Thing </u></strong> existant ou supprime un <strong><u> Thing </u></strong>!
+
+
+
+
+
+  </body>
+  </html>
+

@@ -88,29 +88,19 @@
     </div><br>
     <a href="https://practicalprogramming.fr/tuto-node-version" target="_blank">Comment connaître sa version Node ?</a>
 
-    <h3>Installez Angular</h3>
-    Il vous faudra également la <strong>CLI Angular</strong> pour pouvoir faire tourner le serveur de développement sur lequel sera exécuté le code du front-end.<br>
-    Pour l'installer, exécutez la commande suivante à partir de votre console :<br><br>
-    <div class="code">
-      npm install -g @angular/cli
-    </div><br><br>
-    <div class="important">
-      Les utilisateurs Mac devront peut-être ajouter <strong><u>sudo</u></strong> pour que cela fonctionne.<br>
-      Pour plus d'informations sur l'utilisation de <strong><u>npm</u></strong>  sur MacOS, reportez-vous à la page <a href="https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally" target="_blank">Resolving EACCES permissions errors when installing packages globally</a>, issue de la documentation de <strong><u>npm</u></strong>.
-    </div>
 
     <h3>Clonez l'application front-end</h3>
-    Il est maintenant temps de créer votre répertoire de travail pour ce cours : vous pouvez le nommer go-fullstack par exemple.<br>
-    Une fois le répertoire créé, il vous faudra cloner le <a href="https://github.com/OpenClassrooms-Student-Center/go-fullstack-fr-frontend" target="_blank">code pour l'application front-end</a> dans un sous-répertoire appelé frontend .<br>
+    Il est maintenant temps de créer votre répertoire de travail pour ce cours : vous pouvez le nommer <div class="inner_code">go-fullstack</div>  par exemple.<br>
+    Une fois le répertoire créé, il vous faudra cloner le <a href="https://github.com/OpenClassrooms-Student-Center/go-fullstack-v3-fr" target="_blank">code pour l'application front-end</a> dans un sous-répertoire appelé frontend .<br>
     À partir de votre répertoire de travail, entrez la commande ci-dessous :<br>
     <div class="code">
-      git clone https://github.com/OpenClassrooms-Student-Center/go-fullstack-fr-frontend.git frontend
+      git clone https://github.com/OpenClassrooms-Student-Center/go-fullstack-v3-fr.git frontend
     </div><br>
     Vous pouvez ensuite procéder comme suit :<br>
     <div class="code">
       cd frontend<br>
       npm install<br>
-      ng serve<br>
+      npm run start<br>
     </div><br>
     Cela installera toutes les dépendances requises par l'application front-end et lancera le serveur de développement.<br>
     Désormais, si vous accédez à <a href="http://localhost:4200" target="_blank">http://localhost:4200</a>, vous devriez voir l'interface suivante (en supposant que vous avez bien suivi les étapes ci-dessus) :<br><br>
@@ -123,7 +113,7 @@
     La dernière étape consiste à créer un second sous-répertoire dans votre répertoire de travail, appelé backend.<br>
     C'est là que vous créerez l'application Express.<br><br>
     <p>
-      Veillez à avoir toujours un terminal qui exécute <strong><u>ng serve</u></strong> lorsque vous travaillez sur ce cours.<br>
+      Veillez à avoir toujours un terminal qui exécute <strong><u>npm run start</u></strong> lorsque vous travaillez sur ce cours.<br>
       De cette façon, vous pourrez toujours tester votre code en temps réel !
     </p>
 
@@ -140,14 +130,18 @@
     <strong>Express</strong> est, pour faire court, un framework reposant sur Node qui facilite la création et la gestion des serveurs Node, comme vous le verrez à mesure que nous progresserons dans ce cours.
 
     <h3>Initialisez votre projet</h3>
+    <div class="remarque">
+      Avant de commencer, vous pouvez initialiser un dépôt Git en exécutant <div class="inner_code">git init</div> depuis votre dossier backend .<br>
+      N'oubliez pas de créer un fichier <div class="inner_code">.gitignore</div> contenant la ligne <div class="inner_code">node_modules</div> afin de ne pas envoyer ce dossier (qui deviendra volumineux) vers votre dépôt distant.<br>
+      Si, contrairement à moi, vous créez le dépôt Git en premier, vous pourrez ajouter son URL distant à la configuration du projet Node pendant l'étape suivante.
+    </div><br><br>
     À partir de votre dossier <strong><u>backend</u></strong> , exécutez la commande de terminal <strong><u>npm init</u></strong> pour initialiser votre projet.<br>
     Vous pouvez utiliser les options par défaut ou les modifier si vous le souhaitez.<br>
     Cependant, votre point d'entrée doit être <strong><u>server.js </u></strong>.<br>
      Vous le créerez bientôt.<br>
      <video src="media/2_1_init_backend.mp4" controls width="800"></video><br/><br/>
     Ce processus génère un fichier <strong><u> package.json</u></strong> vierge, dans lequel seront enregistrés les détails de tous les packages <strong><u> npm </u></strong>que nous utiliserons pour ce projet.<br>
-    À ce stade, vous pouvez initialiser un dépôt Git en exécutant <strong><u> git init </u></strong> depuis votre dossier backend .<br>
-    N'oubliez pas de créer un fichier <strong><u> .gitignore </u></strong>contenant la ligne <strong><u> node_modules </u></strong>afin de ne pas envoyer ce dossier (qui deviendra volumineux) vers votre dépôt distant.<br>
+    
     Créez un fichier <strong><u> server.js </u></strong> à l'intérieur de votre dossier <strong><u> backend </u></strong>.<br>
     Il contiendra votre premier serveur Node.
 
@@ -164,6 +158,14 @@
     Ici, vous importez le package HTTP natif de Node et l'utilisez pour créer un serveur, en passant une fonction qui sera exécutée à chaque appel effectué vers ce serveur.<br>
     Cette fonction reçoit les objets <strong><u> request </u></strong> et <strong><u> response </u></strong> en tant qu'arguments.<br>
     Dans cet exemple, vous utilisez la méthode <strong><u> end </u></strong> de la réponse pour renvoyer une réponse de type <strong><u> string </u></strong> à l'appelant.
+    <div class="remarque">
+      Node utilise le système de module CommonJS, donc pour importer le contenu d'un module JavaScript, on utilise le mot-clé require plutôt que le mot-clé import . Ce système est particulièrement utile car il nous permet d'importer les modules de base de Node très facilement (comme le module  http ici) sans spécifier le chemin exact du fichier.<br>
+      Node sait qu'il doit importer un module de base quand on ne spécifie pas un chemin relatif (qui commence par  <div class="inner_code">./</div>  ou  <div class="inner_code">/</div>  , par exemple).<br><br>
+      Vous verrez dans le prochain chapitre que nous utilisons aussi le mot-clé <div class="inner_code">require</div> pour importer nos propres fichiers en utilisant leur chemin relatif,<br>
+      comme <div class="inner_code">./app.js</div> ou même <div class="inner_code">./app</div>  ,<br>
+      tout simplement – <div class="inner_code">require</div>  nous permet d'omettre l'extension  <div class="inner_code">.js</div> .
+    </div><br><br>
+    Dans la dernière ligne, vous configurez le serveur pour qu'il écoute :
     <ul>
       <li>soit la variable d'environnement du port grâce à <strong><u> process.env.PORT </u></strong>:<br>
          si la plateforme de déploiement propose un port par défaut, c'est celui-ci qu'on écoutera ;</li>
@@ -243,6 +245,8 @@
     Chaque élément de <strong>middleware</strong> reçoit les objets <strong><u> request </u></strong> et <strong><u> response </u></strong>, peut les lire, les analyser et les manipuler, le cas échéant.<br>
     Le middleware Express reçoit également la méthode <strong><u> next </u></strong> , qui permet à chaque <strong>middleware</strong> de passer l'exécution au middleware suivant.<br><br>
     <video src="media/3_3_middleware.mp4" controls width="800"></video><br/><br/>
+    Vous retrouvez ci-desous l'intégralité du code :<br>
+    Dans <div class="inner_code">app.js</div><br>
     <div class="tableau_double" style="display: flex;">
       <div class="code">
         const express = require('express');<br/>
@@ -347,7 +351,7 @@
   <h2 id="get">- Créez une route GET -</h2> 
   Il est temps d'ajouter les fonctionnalités dont notre application front-end a besoin et de regarder le système complet prendre forme !<br>
   Votre application front-end doit s'exécuter dans un navigateur.<br>
-  Exécutez donc <strong><u> ng serve </u></strong> à partir du répertoire front-end, accédez à <a href="http://localhost:4200" target="_blank">http://localhost:4200</a> avec votre navigateur puis cliquez sur « Parties 1 + 2 ».
+  Exécutez donc <strong><u> npm run start </u></strong> à partir du répertoire front-end, accédez à <a href="http://localhost:4200" target="_blank">http://localhost:4200</a> avec votre navigateur puis cliquez sur « Parties 1 + 2 ».
 
   <h3>Remettre des articles en vente</h3>
   <video src="media/4_1_GET.mp4" controls width="800"></video><br/><br/>
@@ -428,21 +432,13 @@ Maintenant que vous avez correctement implémenté une route basique pour remett
   L'application front-end contient un formulaire « Vendre un article », qui envoie une demande POST (contenant l'article à vendre) à notre route  <strong><u>api/stuff </u></strong>.<br>
   Voyons comment nous pouvons capturer ces données.<br><br>
   <video src="media/5_1_POST.mp4" controls width="800"></video><br/><br/>
-  Pour gérer la demande POST provenant de l'application front-end, nous devrons être capables d'extraire l'objet JSON de la demande.<br/>
-  Il nous faudra le package <strong><u> body-parser </u></strong>.<br/>
-  Installez-le en tant que dépendance de production à l'aide de <strong><u> npm </u></strong>:<br><br/>
+  Pour gérer la requête POST venant de l'application front-end, on a besoin d'en extraire le corps JSON.<br/>
+  Pour cela, vous avez juste besoin d'un middleware très simple, mis à disposition par le framework Express.<br>
+  Juste après la déclaration de la constante <div class="inner_code"> app </div> , ajoutez :<br>
   <div class="code">
-    npm install --save body-parser<br/>
+    app.use(express.json());
   </div><br/><br/>
-  Importez-le dans votre fichier <strong><u> app.js </u></strong>:<br/><br/>
-  <div class="code">
-    const bodyParser = require('body-parser');<br/>
-  </div><br/><br/>
-  Enfin, définissez sa fonction <strong><u> json </u></strong> comme <strong>middleware</strong> global pour votre application, juste après avoir défini les headers de la réponse :<br/><br/>
-  <div class="code">
-    app.use(bodyParser.json());<br/>
-  </div><br/><br/>
-  Maintenant, <strong><u> body-parser </u></strong> a analysé le corps de la demande.<br/>
+  Avec ceci, Express prend toutes les requêtes qui ont comme Content-Type  <div class="inner_code">application/json</div>  et met à disposition leur  <div class="inner_code">body</div>  directement sur l'objet req, ce qui nous permet d'écrire le middleware POST suivant :<br>
   Au lieu de l'écrire dans un <strong>middleware</strong> <strong><u> .use() </u></strong>qui traiterait toutes les requêtes, nous allons l'écrire dans un <strong><u>.post() </u></strong> qui ne traitera que les requêtes de type POST :<br><br/>
   <div class="code">
     app.post('/api/stuff', (req, res, next) => {<br/>
@@ -450,15 +446,23 @@ Maintenant que vous avez correctement implémenté une route basique pour remett
       res.status(201).json({<br/>
         message: 'Objet créé !'<br/>
       });<br/>
-    });<br/>
+    });
   </div><br/><br/>
   <div class="important">
-    Veillez à placer la route POST au-dessus du <strong> middleware </strong> pour les demandes GET,<br>
-     car la logique GET interceptera actuellement toutes les demandes envoyées à votre point de terminaison <strong><u>/api/stuff </u></strong>,<br>
-     étant donné qu'on ne lui a pas spécifié de verbe spécifique.<br>
-    Placer la route POST au-dessus interceptera les demandes POST, en les empêchant d'atteindre le <strong>middleware</strong> GET.
+    Veillez à :
+    <ul>
+      <li>soit modifier la méthode  <div class="inner_code">use</div>  en  <div class="inner_code">get</div>  pour le middleware des requêtes <strong>GET</strong> ;</li>
+      <li>soit placer la route <strong>POST</strong> au-dessus du middleware pour les requêtes <strong>GET</strong>,<br>
+        car la logique <strong>GET</strong> interceptera actuellement toutes les requêtes envoyées à votre endpoint <div class="inner_code">/api/stuff</div> ,<br>
+        étant donné qu'on ne lui a pas indiqué de verbe spécifique.<br>
+        Placer la route <strong>POST</strong> au-dessus interceptera les requêtes <strong>POST</strong>, en les empêchant d'atteindre le middleware <strong>GET</strong>.</li>
+    </ul>
+    
+    
+    
   </div><br/>
   Désormais, si vous remplissez le formulaire dans l'application front-end et que vous l'envoyez, l'objet que vous venez de créer doit s'enregistrer dans votre console Node !
+  <div class="border_red">En passant votre middleware à  <div class="inner_code">app.post()</div>  au lieu de  <div class="inner_code">app.use()</div>  , il répondra uniquement aux requêtes de type POST.</div>
 
   <h3>En résumé</h3>
   <ul>Dans cette première partie du cours, vous avez :
@@ -474,11 +478,44 @@ Maintenant que vous avez correctement implémenté une route basique pour remett
 
   <h2 id="mongodb">- Configurez votre base de données -</h2>
   Jusqu'à présent, nous n'avons pas pu faire persister de données ou rendre notre application entièrement dynamique.<br>
-  Mais tout cela est sur le point de changer, car nous intégrons la couche de base de données de notre serveur : <strong>MongoDB</strong>.<br>
+  Mais tout cela est sur le point de changer, car nous intégrons la couche de base de données de notre serveur : <strong>MongoDB</strong>.<br><br>
+<h3>Qu'est-ce qu'une base de données ?</h3>
+Une base de données, en gros, est une collection de données structurées.<br>
+La structure des données, ainsi que l'organisation de la collection dépendent du type de base de données.<br>
+Il y a deux types de base qui nous intéresseront ici : SQL et NoSQL.
+<h3>Qu'est-ce qu'une base de données SQL ?</h3>
+Une base de données SQL est une base de données relationnelle qui emploie le langage <strong>Structured Query Language</strong> pour gérer les données qu'elle contient.<br>
+Généralement, une base de données SQL organise ses données dans des tables selon des schémas stricts.<br>
+Par exemple, si on décide qu'un utilisateur a un prénom, un nom et une adresse mail, on aura une table <div class="inner_code">Users</div> avec des colonnes <div class="inner_code">first_name</div>  , <div class="inner_code">last_name</div>  et <div class="inner_code">email</div>  ,<br>
+et chaque rangée correspondra à un utilisateur.<br>
+Pour être un utilisateur valide, chaque utilisateur doit avoir un prénom, un nom et une adresse mail, donc on peut être certain que chaque utilisateur tiré de la base de données aura ces attributs.
+Dans une base de données SQL, les relations entre les différentes tables sont très importantes.<br>
+Pour cette raison, notre table <div class="inner_code">Users</div> aura également une colonne <div class="inner_code">id</div> pour l'identifiant individuel unique de chaque utilisateur.<br>
+Cela signifie que l'on peut faire référence à un utilisateur depuis une autre table.<br>
+Par exemple, on pourrait avoir une table <div class="inner_code">Orders</div> pour les commandes des utilisateurs.<br>
+Chaque commande doit appartenir à un utilisateur, donc on fera référence à l'identifiant de l'utilisateur dans la colonne <div class="inner_code">user_id</div> de la table <div class="inner_code">Orders</div>.<br><br>
+Les bases de données SQL (comme MySQL ou PostgreSQL) sont très bien adaptées aux données relationnelles et pour des données où des définitions fortes sont nécessaires.<br>
+Cependant, dans le contexte de projets plus petits, des MVP ou des startups, on ne sait peut-être pas encore à quoi ressemblera notre dernier modèle de données.<br>
+On souhaitera aussi potentiellement pouvoir grandir rapidement (il est très difficile d'agrandir une base de données SQL au-delà d'une certaine limite) pour pouvoir gérer un plus grand nombre d'utilisateurs.<br>
+Voilà où le NoSQL montre son utilité, en particulier MongoDB.
+
+<h3>Qu'est-ce que MongoDB ?</h3>
+MongoDB est une base de données NoSQL.<br>
+Cela signifie que l'on ne peut pas utiliser SQL pour communiquer avec.<br>
+Les données sont stockées comme des collections de documents individuels décrits en JSON (JavaScript Object Notation).<br>
+Il n'y a pas de schéma strict de données (on peut écrire, en gros, ce que l'on veut où l'on veut), et il n'y a pas de relation concrète entre les différentes données.<br>
+Cependant, il existe des outils (que vous découvrirez rapidement !) pour nous aider à subvenir à ces besoins.<br>
+Les avantages principaux de MongoDB sont son évolutivité et sa flexibilité.<br>
+Le site officiel décrit MongoDB comme étant "construit pour des personnes qui construisent des applications Internet et des applications métier qui ont besoin d'évoluer rapidement et de grandir élégamment".<br>
+La compétence MongoDB est donc très recherchée dans les startups et PME.<br>
+Un autre avantage est la facilité avec laquelle on communique avec la base de données avec JavaScript, avec les documents décrits en JSON.<br>
+Cela vous permet d'appliquer les connaissances JS que vous avez déjà à la couche base de données !
+
+<h3>Configurez MongoDB Atlas</h3>
   Bien qu'il soit possible de télécharger et d'exécuter MongoDB sur votre propre machine <br>
   (reportez-vous au <a href="https://www.mongodb.com/try?initial=true#community" target="_blank">site Web de MongoDB</a> pour en savoir plus),<br>
   pour ce cours nous utiliserons la couche gratuite de MongoDB Atlas, la « database as a service » (base de données en tant que service).
-  <h3>Configurez MongoDB Atlas</h3>
+
   <video src="media/6_1_mongoDB.mp4" controls width="800"></video><br/><br/>
   Accédez au <a href="" target="_blank">site Web de MongoDB</a> et inscrivez-vous pour obtenir un compte gratuit.<br>
   Une fois que vous avez accès à votre tableau de bord, créez un cluster puis configurez-le avec <strong>l'option AWS </strong> et <strong>uniquement les options gratuites </strong>afin de pouvoir développer gratuitement.<br>
@@ -500,10 +537,18 @@ Maintenant que vous avez correctement implémenté une route basique pour remett
   Sélectionnez bien la version la plus récente du driver Node.js, puis <strong><u> Connection String Only </u></strong>, et faites une copie de la chaîne de caractères retournée.<br><br>
   De retour sur votre projet, installez le package Mongoose en exécutant, à partir du dossier <strong><u> backend </u></strong>, la commande suivante :<br>
   <div class="code">
-    npm install --save mongoose
+    npm install mongoose
   </div><br><br>
   <div class="remarque">
-    Mongoose est un package qui facilite les interactions avec notre base de données MongoDB grâce à des fonctions extrêmement utiles.
+    Mongoose est un package qui facilite les interactions avec notre base de données MongoDB.<br>
+    Il nous permet de :
+    <ul>
+      <li>valider le format des données ;</li>
+      <li>gérer les relations entre les documents ;</li>
+      <li>communiquer directement avec la base de données pour la lecture et l'écriture des documents.</li>
+    </ul>
+    Tout cela nous permet de dépasser plusieurs des obstacles que l'on peut rencontrer avec des bases de données NoSQL,<br>
+    et d'appliquer nos connaissances en JavaScript à une base encore plus fonctionnelle !
   </div><br><br>
   Une fois l'installation terminée, importez <strong><u>  mongoose </u></strong> dans votre fichier <strong><u>  app.js </u></strong> en ajoutant la constante suivante :<br><br>
   <div class="code">
@@ -520,7 +565,13 @@ Maintenant que vous avez correctement implémenté une route basique pour remett
   </div><br><br>
   Après enregistrement voire redémarrage de votre serveur Node si nécessaire, vous devriez voir le message « Connexion à MongoDB Atlas réussie ! » dans la console. <br>
   Votre API est à présent connectée à votre base de données et nous pouvons commencer à créer des routes serveur afin d'en bénéficier.
-
+  
+  <h3>En résumé</h3>
+  <ul>
+    <li>Pour des applications qui ont besoin d'évoluer rapidement,<br> les bases de données NoSQL comme MongoDB sont souvent un bon choix de technologie.</li>
+    <li>MongoDB Atlas permet d'héberger gratuitement une base de données MongoDB.</li>
+    <li>Le package Mongoose facilite les interactions entre votre application Express et votre base de données MongoDB.</li>
+  </ul>
 
   <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -556,7 +607,12 @@ module.exports = mongoose.model('Thing', thingSchema);
     <li> ensuite, nous exportons ce schéma en tant que modèle Mongoose appelé « Thing »,<br>
        le rendant par là même disponible pour notre application Express.</li>
   </ul>
-</div><br>
+</div>
+<h3>En résumé</h3>
+<ul>
+  <li>La méthode  <div class="inner_code">Schema</div>  de Mongoose vous permet de créer un schéma de données pour votre base de données MongoDB.</li>
+  <li>La méthode  <div class="inner_code">model</div>  transforme ce modèle en un modèle utilisable.</li>
+</ul>
 
 <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -635,6 +691,25 @@ Nous pouvons créer des objets et les voir apparaître immédiatement dans notre
 Et nous pouvons même ouvrir un objet en particulier pour obtenir les informations de cet objet précis, via la base de données.<br>
 Dans le chapitre suivant, nous implémenterons nos boutons Modifier et Supprimer pour terminer la partie <strong><u> Thing </u></strong> de notre API.
 
+<h3>En résumé</h3>
+<ul>
+  <li>Les méthodes de votre modèle Thing permettent d'interagir avec la base de données :
+    <ul>
+      <li><div class="inner_code">save()</div><br>
+        enregistre un Thing ;
+      </li>
+      <li><div class="inner_code">find()</div><br>
+        retourne tous les Things
+      </li>
+      <li><div class="inner_code">findOne()</div><br>
+        retourne un seul Thing basé sur la fonction de comparaison qu'on lui passe<br>
+        (souvent pour récupérer un Thing par son identifiant unique).</li>
+    </ul>
+  </li>
+  <li>
+    La méthode  <div class="inner_code">app.get()</div>  permet de réagir uniquement aux requêtes de type GET.
+  </li>
+</ul>
 
 <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -691,6 +766,10 @@ Dans le chapitre suivant, nous implémenterons nos boutons Modifier et Supprimer
   </ul>
   L'application permet donc désormais un parcours client complet !
   <h3>En résumé</h3>
+  <ul>
+    <li><div class="inner_code">app.put()</div>  et  <div class="inner_code">app.delete()</div>  attribuent des middlewares aux requêtes de type <strong>PUT</strong> et de type <strong>DELETE</strong>.</li>
+    <li>Les méthodes  <div class="inner_code">updateOne()</div>  et  <div class="inner_code">delete()</div>  de votre modèle Thing permettent de mettre à jour ou de supprimer un Thing dans la base de données.</li>
+  </ul>
   <ul>Dans cette partie du cours :
     <li>vous avez configuré votre base de données MongoDB et l'avez connectée à votre application Express ;</li>
     <li>vous avez utilisé Mongoose pour créer un modèle de données afin de faciliter les opérations de la base de données ;</li>
@@ -1342,7 +1421,13 @@ Dans notre routeur <strong><u> stuff </u></strong> , nous importons notre middle
   Pour ce faire nous allons donc créer un fichier qui contiendra notre URL de connection.<br>
   Par convention ce fichier de nomme <strong><u>.env</u></strong> (dot env)<br><br>
   Installer la dependance NPM:<br>
-  <strong><u>npm install dotenv</u></strong>
+  <strong><u>npm install dotenv</u></strong><br><br>
+  Il faudra ensuite declare <div class="inner_code">dotenv</div> dans les fichiers qui contiennent des mots de passe<br>
+  Ajouter la dependance<br>
+  <div class="code">
+    <span style="color:rgb(140, 140, 140);">// auth.js</span><br>
+    require('dotenv').config()
+  </div><br><br>
   <h3>MongoDB</h3>
   Créer le fichier <strong><u>.env</u></strong> à la racine du Backend et inclure l' URL de connection MongoDB<br>
   <div class="code">

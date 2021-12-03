@@ -910,7 +910,7 @@ module.exports = router;<br>
     Si cela supprime une chaîne de route, veillez à laisser une barre oblique <strong><u> / </u></strong> (reportez-vous au code ci-dessus).<br>
     Veillez également à remplacer l'élément <strong><u> app.use() </u></strong> final par <strong><u> app.get() </u></strong> si ce n'est pas déjà fait, car cette route ne concerne que les demandes <strong>GET</strong>.  
   </div><br><br>
-
+  On peut egalement supprimer <div class="inner_code">const Thing = require('../models/thing')</div> du fichier <div class="inner_code">app.js</div> car il est maintenant dans le fichier <div class="inner_code">router/stuff.js</div>
   Nous devons désormais enregistrer notre nouveau routeur dans notre fichier <strong><u> app.js </u></strong>.<br>
   D'abord, nous devons l'importer :<br>
   <div class="code">
@@ -1086,10 +1086,12 @@ module.exports = router;<br>
 Comme vous le voyez, cela facilite la compréhension de notre fichier de routeur.<br>
 Il est évident quelles routes sont disponibles à quels points de terminaison, et les noms descriptifs donnés aux fonctions de notre contrôleur permettent de mieux comprendre la fonction de chaque route.<br><br>
 Structurer le code de manière modulaire comme cela n'est pas absolument nécessaire pour chaque projet, mais c'est une bonne habitude à prendre car cela simplifie la maintenance.<br><br>
-Maintenant que tout est prêt, commençons à implémenter l'authentification utilisateur.
 
-Maintenant que tout est prêt, commençons à implémenter l'authentification utilisateur.
-
+<h3>En résumé</h3>
+<ul>
+  <li>La méthode <div class="inner_code">express.Router()</div>  vous permet de créer des routeurs séparés pour chaque route principale de votre application – vous y enregistrez ensuite les routes individuelles.</li>
+  <li>Un fichier de contrôleur exporte des méthodes qui sont ensuite attribuées aux routes pour améliorer la maintenabilité de votre application.</li>
+</ul>
 
 <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -1106,7 +1108,12 @@ Lorsqu'un utilisateur tentera de se connecter, nous utiliserons <strong><u> bcry
 Ces deux hash ne seront pas les mêmes : cela poserait un problème de sécurisation, car les pirates informatiques n'auraient qu'à deviner les mots de passe jusqu'à ce que les hash correspondent.<br>
 Le package <strong><u> bcrypt </u></strong> permet d'indiquer si les deux hash ont été générés à l'aide d'un même mot de passe initial.<br>
 Il nous aidera donc à implémenter correctement le stockage et la vérification sécurisés des mots de passe.<br>
+<div class="code">
+  npm install bcrypt<br>
+</div><br>
 La première étape de l'implémentation de l'authentification est de créer un modèle de base de données pour les informations de nos utilisateurs.
+
+
 
 <h3>Créez un modèle de données</h3>
 <video src="media/7_3_user.mp4" controls width="800"></video><br/><br/>
@@ -1115,7 +1122,13 @@ Pour s'assurer que deux utilisateurs ne peuvent pas utiliser la même adresse e-
 Les erreurs générées par défaut par MongoDB pouvant être difficiles à résoudre, nous installerons un package de validation dans le <strong><u> Backend </u></strong> pour pré-valider les informations avant de les enregistrer :<br>
 <div class="code">
   npm install --save mongoose-unique-validator
-</div><br/>
+</div><br/><br>
+<div class="remarque">
+  Il se peut que vous ayez besoin d'ajouter le flag  <div class="inner_code">--force</div>  à la commande ci-dessus<br/>
+  si jamais vous installez le validateur peu de temps après l'arrivée d'une nouvelle version de  mongoose  :<br/>
+  parfois les personnes qui s'occupent du package validateur mettent un peu de temps pour le mettre à jour.<br/>
+  Mais ne nous frustrons pas : ils font un super travail d'open source bénévole !
+</div><br/><br/>
 Ce package une fois installé, nous pouvons créer notre propre modèle utilisateur :<br/>
 <div class="code">
   const mongoose = require('mongoose');<br/>
@@ -1128,13 +1141,18 @@ const userSchema = mongoose.Schema({<br/>
 <br/>
 userSchema.plugin(uniqueValidator);<br/>
 <br/>
-module.exports = mongoose.model('User', userSchema);<br/>
+module.exports = mongoose.model('User', userSchema);
 </div><br/>
 
 Dans notre schéma, la valeur <strong><u> unique </u></strong>, avec l'élément <strong><u> mongoose-unique-validator </u></strong> passé comme plug-in, s'assurera qu'aucun des deux utilisateurs ne peut partager la même adresse e-mail.
 
 Maintenant que notre modèle est prêt, nous allons commencer à l'utiliser dans le chapitre suivant pour enregistrer les nouveaux utilisateurs dans notre base de données et appliquer le chiffrement de mot de passe.
 
+<h3>En résumé</h3>
+<ul>
+  <li><div class="inner_code">bcrypt</div>  est un package de cryptage que vous pouvez installer avec  <div class="inner_code">npm</div>  .</li>
+  <li><div class="inner_code">mongoose-unique-validator</div>  améliore les messages d'erreur lors de l'enregistrement de données uniques.</li>
+</ul>
 
 <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -1157,7 +1175,7 @@ Maintenant que notre modèle est prêt, nous allons commencer à l'utiliser dans
   </div><br>
   Nous implémenterons ces fonctions bientôt.<br><br>
    Pour l'instant, terminons la création des routes.<br>
-   Pour ce faire, créez un autre fichier user.js , cette fois dans votre dossier routes :<br>
+   Pour ce faire, créez un autre fichier <div class="inner_code">user.js</div> , cette fois dans votre dossier <div class="inner_code">routes</div> :<br>
    <div class="code">
     const express = require('express');<br>
     const router = express.Router();<br>
@@ -1191,8 +1209,13 @@ Maintenant que notre modèle est prêt, nous allons commencer à l'utiliser dans
    Il nous faudra le package de chiffrement <strong><u> bcrypt </u></strong> pour notre fonction <strong><u> signup </u></strong>.<br>
   Installons-le donc dans notre projet dans le <strong><u> backend </u></strong>:<br>
   <div class="code">
-    npm install --save bcrypt<br>
-  </div><br>
+    npm install bcrypt
+  </div><br><br>
+Importer <strong>bcrypt</strong> dans le fichier <div class="inner_code">controllers/user</div><br>
+<div class="code">
+  const bcrypt = require('bcrypt');
+</div><br><br>
+
   Nous pouvons l'importer dans notre contrôleur et implémenter notre fonction  <strong><u>signup </u></strong>(n'oubliez pas d'importer votre modèle <strong><u> User </u></strong>!) :<br>
 <div class="tableau_double" style="display: flex;">
 
@@ -1220,6 +1243,8 @@ Maintenant que notre modèle est prêt, nous allons commencer à l'utiliser dans
      en renvoyant une réponse de réussite en cas de succès, et des erreurs avec le code d'erreur en cas d'échec ;</li>
 </ul>
 </div><br>
+<h3>En résumé</h3>
+La méthode  <div class="inner_code">hash()</div>  de bcrypt crée un hash crypté des mots de passe de vos utilisateurs pour les enregistrer de manière sécurisée dans la base de données.<br><br>
 
 Dans le chapitre suivant, nous implémenterons notre fonction <strong><u> login </u></strong> pour vérifier les informations d'identification des utilisateurs pour leur permettre de se connecter. 
 
@@ -1262,7 +1287,7 @@ Dans le chapitre suivant, nous implémenterons notre fonction <strong><u> login 
     </ul>
   </li>
   <li>
-    nous utilisons la fonction compare debcrypt pour comparer le mot de passe entré par l'utilisateur avec le hash enregistré dans la base de données :
+    nous utilisons la fonction <div class="inner_code">compare</div> de <div class="inner_code">bcrypt</div> pour comparer le mot de passe entré par l'utilisateur avec le hash enregistré dans la base de données :
     <ul>
       <li>s'ils ne correspondent pas, nous renvoyons une erreur <strong><u> 401 Unauthorized </u></strong> et un message « Mot de passe incorrect ! » ;</li>
       <li>s'ils correspondent, les informations d'identification de notre utilisateur sont valides.<br>
@@ -1278,6 +1303,8 @@ Dans le chapitre suivant, nous implémenterons notre fonction <strong><u> login 
   Sinon, vous ne pourrez plus les modifier.<br>
   En effet, comme ils ont été créés à l'aide d'un ID utilisateur générique, ils ne sont pas modifiables par des utilisateurs créés à partir de maintenant.
 </div>
+<h3>En résumé</h3>
+La méthode <div class="inner_code">compare</div> de bcrypt compare un string avec un hash pour, par exemple, vérifier si un mot de passe entré par l'utilisateur correspond à un hash sécurisé enregistré en base de données – cela montre que même bcrypt ne peut pas décrypter ses propres hashs.
 
 
 <h5><a href="#sommaire">Sommaire</a></h5>
@@ -1291,7 +1318,7 @@ Dans le chapitre suivant, nous implémenterons notre fonction <strong><u> login 
 
 Pour pouvoir créer et vérifier les tokens d'authentification, il nous faudra un nouveau package :<br>
 <div class="code">
-  npm install --save jsonwebtoken
+  npm install jsonwebtoken
 </div><br><br>
 Nous l'importerons ensuite dans notre contrôleur utilisateur :<br>
 <div class="code">
@@ -1332,6 +1359,12 @@ Enfin, nous l'utiliserons dans notre fonction <strong><u> login </u></strong>:<b
   <li>nous renvoyons le token au front-end avec notre réponse.</li>
 </ul>
 </div><br>
+<h3>En résumé</h3>
+<ul>
+  <li>Les JSON web tokens sont des tokens encodés qui peuvent être utilisés pour l'autorisation.</li>
+  <li>La méthode  <div class="inner_code">sign()</div>  du package  <div class="inner_code">jsonwebtoken</div>  utilise une clé secrète pour encoder un token qui peut contenir un payload personnalisé et avoir une validité limitée.</li>
+</ul>
+
 
 Vous pouvez désormais utiliser l'onglet « Réseau » de Chrome DevTools pour vérifier que, une fois connecté, chaque requête provenant du front-end contient bien un en-tête « Authorization » avec le mot-clé « Bearer » et une longue chaîne encodée.<br>
 Il s'agit de notre token !

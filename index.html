@@ -1432,19 +1432,85 @@ Dans notre routeur <strong><u> stuff </u></strong> , nous importons notre middle
   L'API refusera l'accès et renverra une réponse 401.<br>
   Votre API implémente à présent l'authentification par token et est correctement sécurisée.
 
-<h3>En résumé</h3>
-<ul>
-  <li>vous avez ajouté un modèle de données User afin de stocker les informations utilisateur dans votre base de données ;</li>
-  <li>vous avez implémenté le cryptage de mot de passe sécurisé afin de stocker en toute sécurité les mots de passe utilisateur ;</li>
-  <li>vous avez créé et envoyé des tokens au front-end pour authentifier les requêtes ;</li>
-  <li>vous avez ajouté le middleware d'authentification pour sécuriser les routes dans votre API.<br>
-    De cette façon, seules les requêtes authentifiées seront gérées.</li>
-</ul>
-
-
+  
+  <h3>La faille d'autorisation</h3>
+  Il se trouve que nous avons une vulnérabilité de sécurité dans notre API.<br>
+  L'une de nos routes permet potentiellement à la mauvaise personne de réussir à effectuer une requête.<br><br>
+  Voici votre mission :
+  La route qui comporte une faille de sécurité est la route <div class="inner_code">DELETE</div>.<br>
+  Notre application front-end ne nous envoie pas d'ID utilisateur quand elle demande la suppression d'un Thing,<br>
+  donc actuellement nous ne sommes pas en mesure de vérifier si l'utilisateur qui effectue la requête est bien le propriétaire du Thing qu'il essaie de supprimer.<br>
+  En théorie, donc, tout utilisateur ayant un token valable pourrait <strong>supprimer le Thing de N'IMPORTE QUI</strong>.<br><br>
+  Nous n'avons pas la main sur l'application front-end, il nous faut un moyen de comparer l'ID utilisateur du token avec le champ userId du Thing que nous avons récupéré de la base de données.<br>
+  Le défi ici est que nous n'avons actuellement pas accès à l'ID utilisateur extrait du token dans notre contrôleur <div class="inner_code">DELETE</div>.<br>
+  Il y a, cependant, une solution simple :
+  <ul>
+    <li>
+      Dans notre middleware d'authentification, nous ajoutons un objet  <div class="inner_code">auth</div>  à l'objet de requête qui contient le  <div class="inner_code">userId</div>  extrait du token :<br>
+      <div class="code">req.auth = { userId }; </div><br>
+      <div class="remarque">
+        La syntaxe <div class="inner_code">{ userId }</div>, dans ce contexte, est la même chose que  <div class="inner_code">{ userId: userId }</div>.<br>
+        Il s'agit d'un raccourci JavaScript très utile pour, dans un objet, attribuer la valeur d'une variable à une clé qui aura le même nom que cette variable.<br>
+        Ici, nous assignons la valeur de la variable  <div class="inner_code">userId</div>  à la clé  <div class="inner_code">userId</div>  de l'objet  <div class="inner_code">auth</div>.
+      </div>
+    </li>
+    <li>
+      Dans notre contrôleur <div class="code">DELETE</div>, d'abord nous récupérons le Thing en base de données,<br>
+      ensuite nous vérifions qu'il appartient bien à l'utilisateur qui effectue la requête,<br>
+      si c'est le cas, nous supprimons le Thing ; sinon, nous retournons une erreur :<br>
+      <div class="code">
+        exports.deleteThing = (req, res, next) => {<br>
+          Thing.findOne({ _id: req.params.id }).then(<br>
+          (thing) => {<br>
+            if (!thing) {<br>
+              res.status(404).json({<br>
+                error: new Error('No such Thing!')<br>
+              });<br>
+            }<br>
+            if (thing.userId !== req.auth.userId) {<br>
+              res.status(400).json({<br>
+                error: new Error('Unauthorized request!')<br>
+              });<br>
+            }<br>
+            Thing.deleteOne({ _id: req.params.id }).then(<br>
+            () => {<br>
+              res.status(200).json({<br>
+                message: 'Deleted!'<br>
+              });<br>
+            }<br>
+            ).catch(<br>
+            (error) => {<br>
+              res.status(400).json({<br>
+                error: error<br>
+              });<br>
+            }<br>
+            );<br>
+          }<br>
+          )<br>
+        };
+      </div>
+    </li>
+  </ul>
+  Ainsi, seul le propriétaire d'un Thing peut le supprimer !
+  
+  <h3>En résumé</h3>
+  <ul>
+    <li>vous avez ajouté un modèle de données User afin de stocker les informations utilisateur dans votre base de données ;</li>
+    <li>vous avez implémenté le cryptage de mot de passe sécurisé afin de stocker en toute sécurité les mots de passe utilisateur ;</li>
+    <li>vous avez créé et envoyé des tokens au front-end pour authentifier les requêtes ;</li>
+    <li>vous avez ajouté le middleware d'authentification pour sécuriser les routes dans votre API.<br>
+      De cette façon, seules les requêtes authentifiées seront gérées.</li>
+    <li>
+      La méthode  <div class="inner_code">verify()</div>  du package jsonwebtoken permet de vérifier la validité d'un token (sur une requête entrante, par exemple).
+    </li>
+    <li>Ajoutez bien votre middleware d'authentification dans le bon ordre sur les bonnes routes.</li>
+    <li>Attention aux failles de sécurité !</li>
+  </ul>
+  
+  
   <h5><a href="#sommaire">Sommaire</a></h5>
-
-
+  
+  
   <h2 id="env">3.7 - Securisez vos fichiers sur Github -</h2> 
   Afin de securiser les données lors du deploiement , il est necessaire de créer <strong>un fichier contenant les données sensible qui ne sera pas deployer sur une plateforme publique</strong>.<br>
   Pour connecter à notre base de donnée MongoDB nous avons besoins du URL de connection.<br>
@@ -1554,7 +1620,7 @@ Dans notre routeur <strong><u> stuff </u></strong> , nous importons notre middle
 <h3>Configurez le middleware de gestion des fichiers</h3>
 <video src="media/8_1_Multer.mp4" controls width="800"></video><br/><br/>
 Nous devrons d'abord installer <strong><u> multer </u></strong> dans notre projet :<br>
-<div class="code">npm install --save multer</div><br>
+<div class="code">npm install multer</div><br>
 Les images seront enregistrées dans un sous-dossier appelé<strong><u> images </u></strong>.<br>
 Créez donc ce sous-dossier dans votre dossier <strong><u>  backend </u></strong>.<br>
 Vous pouvez maintenant créer un middleware dans notre dossier <strong><u> middleware </u></strong> appelé <strong><u> multer-config.js </u></strong> :<br>
@@ -1594,7 +1660,13 @@ module.exports = multer({storage: storage}).single('image');<br>
   </li>
 </ol></div>
 Avant de pouvoir appliquer notre middleware à nos routes <strong><u> stuff </u></strong>, nous devrons les modifier quelque peu, car la structure des données entrantes n'est pas tout à fait la même avec des fichiers et des données JSON.
-
+<h3>En résumé</h3>
+<ul>
+  <li><div class="inner_code">multer</div> est un package de gestion de fichiers.</li>
+  <li>Sa méthode<div class="inner_code"> diskStorage()</div>  configure le chemin et le nom de fichier pour les fichiers entrants.</li>
+  <li>Sa méthode <div class="inner_code">single()</div> crée un middleware qui capture les fichiers d'un certain type (passé en argument),<br>
+    et les enregistre au système de fichiers du serveur à l'aide du storage configuré.</li>
+</ul>
 
 <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -1717,7 +1789,19 @@ Dans cette version modifiée de la fonction, on crée un objet <strong><u> thing
 S'il existe, on traite la nouvelle image ; s'il n'existe pas, on traite simplement l'objet entrant.<br>
 On crée ensuite une instance <strong><u>  Thing </u></strong> à partir de <strong><u> thingObject </u></strong> , puis on effectue la modification.<br><br>
 Notre application gère correctement les téléchargements de fichiers lorsque nous mettons de nouveaux articles en vente et lorsque nous modifions les articles existants.
-
+<h3>En résumé</h3>
+<ul>
+  <li>
+    <div class="inner_code"></div>JSON.parse() transforme un objet stringifié en Object JavaScript exploitable.
+  </li>
+  <li>
+    Vous aurez besoin de <div class="inner_code">req.protocol</div>  et de  <div class="inner_code">req.get('host')</div>,<br>
+     connectés par  <div class="inner_code">'://'</div>  et suivis de <div class="inner_code">req.file.filename</div> pour reconstruire l'URL complète du fichier enregistré.
+  </li>
+  <li>
+    Configurez votre serveur pour renvoyer des fichiers statiques pour une route donnée avec <div class="inner_code">express.static()</div>  et <div class="inner_code">path.join()</div>.
+  </li>
+</ul>
 
 <h5><a href="#sommaire">Sommaire</a></h5>
 
@@ -1761,7 +1845,11 @@ Notre application gère correctement les téléchargements de fichiers lorsque n
   Notre API peut désormais gérer correctement toutes les opérations CRUD contenant des fichiers :<br>
    lorsqu'un utilisateur crée un <strong><u> Thing </u></strong>, met à jour un <strong><u> Thing </u></strong> existant ou supprime un <strong><u> Thing </u></strong>!
 
-
+   <h3>En résumé</h3>
+<ul>
+  <li>Le package <div class="inner_code">fs</div> expose des méthodes pour interagir avec le système de fichiers du serveur.</li>
+  <li>La méthode <div class="inner_code">unlink()</div> du package  <div class="inner_code">fs</div>  vous permet de supprimer un fichier du système de fichiers.</li>
+</ul>
 
 
 
